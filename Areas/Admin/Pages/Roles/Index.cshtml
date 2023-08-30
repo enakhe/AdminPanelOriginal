@@ -1,19 +1,17 @@
 ﻿@page
-@using AdminPanel.ViewModels
-@using AdminPanel.Areas.Admin.Pages.User
-@model IndexModel
-
+@model AdminPanel.Areas.Admin.Pages.Roles.IndexModel
 @{
-    ViewData["Title"] = "Users";
+    ViewData["Title"] = "Roles";
     Layout = "_Dashboard";
 }
+
 
 <div class="content-wrapper">
     <section class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Users DataTables</h1>
+                    <h1>Roles DataTables</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -26,70 +24,63 @@
     </section>
     <section class="content">
         <div class="container-fluid">
-            <div class="row align-items-center mb-2">
-                <div class="col-md-2">
-                    <a asp-area="Admin" asp-page="/Users/Create" class="btn btn-success shadow-none">Create</a>
+            <form id="createForm needs-validation" method="post" asp-area="Admin" asp-page="/Roles/Create">
+                <div class="row align-items-center">
+                    <div class="col-md-10">
+                        <div class="form-floating mb-0 py-1">
+                            <input name="roleName" id="roleName" class="form-control shadow-none" placeholder="Role name">
+                            <label for="Role name" class="form-label">Role name</label>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-success py-3 px-4 shadow-none">Create</button>
+                    </div>
                 </div>
-            </div>
+            </form>
             <div class="row">
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">DataTable with every user data</h3>
+                            <h3 class="card-title">DataTable with every role data</h3>
                         </div>
                         <div class="card-body">
                             <table id="example1" class="table table-bordered table-hover">
                                 <thead>
                                     <tr>
-                                        <th>Username</th>
-                                        <th>Full name</th>
-                                        <th>Email</th>
-                                        <th>Roles</th>
-                                        <th>Date created</th>
+                                        <th>Name</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @{
-                                        if (Model.UserRoleList != null)
+                                        if (Model.RoleList != null)
                                         {
-                                            @foreach (UserRolesViewModel user in Model.UserRoleList)
+                                            @foreach (IdentityRole role in Model.RoleList)
                                             {
                                                 <tr>
                                                     <td>
                                                         <a asp-action="" asp-controller="User">
-                                                            @user.Username
+                                                            @role.Name
                                                         </a>
                                                     </td>
-                                                    <td>@user.FullName</td>
-                                                    <td>@user.Email</td>
-                                                    <td>
-                                                        @string.Join(" , ", user.Roles.ToList())
-                                                    </td>
-                                                    <td>@user.DateCreated.ToString("MMM dd, yyyy")</td>
                                                     <td class="dropdown">
                                                         <a class="text-dark p" href="#" data-toggle="dropdown" aria-expanded="false">
                                                             <i class="fa-solid fa-ellipsis-vertical"></i>
                                                         </a>
                                                         <ul class="dropdown-menu dropdown-menu-md dropdown-menu-center">
                                                             <li class="dropdown-item">
-                                                                <a asp-area="Admin" class="text-primary" asp-page="/Users/Edit" asp-route-id="@user.Id">
+                                                                <a asp-area="Admin" class="text-primary" asp-page="/User/Edit" asp-route-id="@role.Id">
                                                                     <i class="fa-solid text-primary fa-edit"></i> Edit
                                                                 </a>
                                                             </li>
                                                             <li class="dropdown-item">
-                                                                <a asp-area="Admin" class="text-danger" asp-page="/Users/Delete" asp-route-id="@user.Id">
+                                                                <a asp-area="Admin" class="text-danger" asp-page="/User/Delete" asp-route-id="@role.Id">
                                                                     <i class="fa-solid text-danger fa-trash"></i> Delete
-                                                                </a>
-                                                            </li>
-                                                            <li class="dropdown-item">
-                                                                <a asp-area="Admin" class="text-dark" asp-page="/Users/Role" asp-route-id="@user.Id">
-                                                                    <i class="fa-solid fa-layer-group"></i> Manage role
                                                                 </a>
                                                             </li>
                                                         </ul>
                                                     </td>
-                                                    
+
                                                 </tr>
                                             }
                                         }
@@ -98,11 +89,7 @@
                                 </tbody>
                                 <tfoot>
                                     <tr>
-                                        <th>Username</th>
-                                        <th>Full name</th>
-                                        <th>Email</th>
-                                        <th>Roles</th>
-                                        <th>Date created</th>
+                                        <th>Name</th>
                                         <th>Action</th>
                                     </tr>
                                 </tfoot>

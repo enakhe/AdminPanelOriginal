@@ -1,0 +1,110 @@
+﻿@page
+@using AdminPanel.Models
+@using AdminPanel.Areas.Admin.Pages.User
+@model IndexModel
+
+@{
+    ViewData["Title"] = "Users";
+    Layout = "_Dashboard";
+}
+
+<div class="content-wrapper">
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Users DataTables</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active">DataTables</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row align-items-center mb-2">
+                <div class="col-md-2">
+                    <a asp-area="Admin" asp-page="/Users/Create" class="btn btn-success shadow-none">Create</a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">DataTable with every user data</h3>
+                        </div>
+                        <div class="card-body">
+                            <table id="example1" class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Username</th>
+                                        <th>First name</th>
+                                        <th>Last name</th>
+                                        <th>Date created</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        if (Model.UserList != null)
+                                        {
+                                            @foreach (ApplicationUser user in Model.UserList)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        <a asp-action="" asp-controller="User">
+                                                            @user.UserName
+                                                        </a>
+                                                    </td>
+                                                    <td>@user.FirstName</td>
+                                                    <td>@user.LastName</td>
+                                                    <td>@user.DateCreated.ToString("MMM dd, yyyy")</td>
+                                                    <td class="dropdown">
+                                                        <a class="text-dark p" href="#" data-toggle="dropdown" aria-expanded="false">
+                                                            <i class="fa-solid fa-ellipsis-vertical"></i>
+                                                        </a>
+                                                        <ul class="dropdown-menu dropdown-menu-md dropdown-menu-center">
+                                                            <li class="dropdown-item">
+                                                                <a asp-area="Admin" class="text-primary" asp-page="/User/Edit" asp-route-id="@user.Id">
+                                                                    <i class="fa-solid text-primary fa-edit"></i> Edit
+                                                                </a>
+                                                            </li>
+                                                            <li class="dropdown-item">
+                                                                <a asp-area="Admin" class="text-danger" asp-page="/User/Delete" asp-route-id="@user.Id">
+                                                                    <i class="fa-solid text-danger fa-trash"></i> Delete
+                                                                </a>
+                                                            </li>
+                                                            <li class="dropdown-item">
+                                                                <a asp-area="Admin" class="text-dark" asp-page="/User/Role" asp-route-id="@user.Id">
+                                                                    <i class="fa-solid fa-layer-group"></i> Assign role
+                                                                </a>
+                                                            </li>
+                                                        </ul>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    }
+
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>Username</th>
+                                        <th>First name</th>
+                                        <th>Last name</th>
+                                        <th>Date created</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

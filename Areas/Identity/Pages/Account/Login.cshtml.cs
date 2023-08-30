@@ -14,8 +14,9 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using AdminPanel.Model;
 using System.Net.Mail;
+using AdminPanel.Models;
+using AdminPanel.InputModel;
 
 namespace AdminPanel.Areas.Identity.Pages.Account
 {
@@ -33,26 +34,12 @@ namespace AdminPanel.Areas.Identity.Pages.Account
         }
 
         [BindProperty]
-        public InputModel Input { get; set; }
+        public LoginInputModel Input { get; set; }
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
         public string ReturnUrl { get; set; }
 
         [TempData]
         public string ErrorMessage { get; set; }
-
-        public class InputModel
-        {
-            [Required]
-            [Display (Name = "Email / Username")]
-            public string Email { get; set; }
-
-            [Required]
-            [DataType(DataType.Password)]
-            public string Password { get; set; }
-
-            [Display(Name = "Remember me?")]
-            public bool RememberMe { get; set; }
-        }
 
         public async Task OnGetAsync(string returnUrl = null)
         {
@@ -79,23 +66,22 @@ namespace AdminPanel.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                var userName = Input.Email;
-                if (IsValidEmail(Input.Email))
+                var userName = Input?.Username;
+                var user = await _userManager.FindByNameAsync(Input.Username);
+                if (user != null)
                 {
-                    var user = await _userManager.FindByEmailAsync(Input.Email);
-                    if (user != null)
-                    {
-                        userName = user.UserName;
-                    }
+                    userName = user.UserName;
                 }
+                var result = await _signInManager.PasswordSignInAsync(Input.Username, Input.Password, Input.RememberMe, lockoutOnFailure: false);
 
-                // This doesn't count login failures towards account lockout
-                // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("User logged in.");
-                    return LocalRedirect(returnUrl);
+                    var currentUser = await _userManager.FindByNameAsync(Input.Username);
+                    var roles = await _userManager.GetRolesAsync(currentUser);
+                    if (roles.Contains("SuperAdmin"))
+                    {
+                        return RedirectToPage("/Dashboard/Index", new { area = "Admin" });
+                    }
                 }
                 if (result.RequiresTwoFactor)
                 {

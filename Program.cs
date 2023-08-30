@@ -1,5 +1,5 @@
 using AdminPanel.Data;
-using AdminPanel.Model;
+using AdminPanel.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 

@@ -1,6 +1,6 @@
 #nullable disable
 
-using AdminPanel.Model;
+using AdminPanel.Models;
 using Microsoft.AspNetCore.Identity;
 
 namespace AdminPanel.Data
@@ -10,8 +10,7 @@ namespace AdminPanel.Data
         public static async Task SeedRolesAsync(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             //Seed Roles
-            await roleManager.CreateAsync(new IdentityRole(ApplicationRole.Roles.Admin.ToString()));
-            await roleManager.CreateAsync(new IdentityRole(ApplicationRole.Roles.Student.ToString()));
+            await roleManager.CreateAsync(new IdentityRole(ApplicationRole.Roles.SuperAdmin.ToString()));
 
         }
 
@@ -34,8 +33,7 @@ namespace AdminPanel.Data
                 if (user == null)
                 {
                     await userManager.CreateAsync(defaultUser, "Samcooper$01");
-                    await userManager.AddToRoleAsync(defaultUser, ApplicationRole.Roles.Admin.ToString());
-                    await userManager.AddToRoleAsync(defaultUser, ApplicationRole.Roles.Student.ToString());
+                    await userManager.AddToRoleAsync(defaultUser, ApplicationRole.Roles.SuperAdmin.ToString());
                 }
 
             }

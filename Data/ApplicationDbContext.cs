@@ -1,4 +1,4 @@
-﻿using AdminPanel.Model;
+﻿using AdminPanel.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;

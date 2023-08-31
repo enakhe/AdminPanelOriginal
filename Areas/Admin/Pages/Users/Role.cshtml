@@ -13,7 +13,12 @@
             <div class="row mb-2">
                 <div class="col-sm-6">
                     <h1 class="m-0">Manage User Roles</h1>
-                    <p>Add/Remove Roles for User / @Model.UserData.FullName</p>
+                    @{
+                        if (Model.UserData != null)
+                        {
+                            <p>Add/Remove Roles for User / @Model.UserData.FullName</p>
+                        }
+                    }
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -41,29 +46,21 @@
                             </div>
                         </div>
                         <form method="post">
-                        <div class="card-body">
-                            
-                                @{
-                                    foreach (ManageUserRolesViewModel manageUserRolesViewModel in Model.ManageUserRolesList)
-                                    {
-                                        <div class="form-check m-1">
-                                            <input type="hidden" asp-for="@manageUserRolesViewModel.RoleId" />
-                                            <input type="hidden" asp-for="@manageUserRolesViewModel.RoleName" />
-                                            <input asp-for="@manageUserRolesViewModel.Selected" class="form-check-input shadow-none" />
-                                            <label class="form-check-label" asp-for="@manageUserRolesViewModel.Selected">
-                                                @manageUserRolesViewModel.RoleName
-                                            </label>
+                            <div class="card-body">
+                                <div class="d-flex justify-content-center">
+                                    <div class="justify-items-center">
+                                        <div class="col-md-12">
+                                            @Html.ListBoxFor(model => model.RoleList,new MultiSelectList(Model.RoleList, "Value", "Text"), new { @class = "form-control w-100", multiple = "multiple", id = "Roles" })
                                         </div>
-                                    }
-                                }
+                                    </div>
+                                </div>
                                 <div asp-validation-summary="All" class="text-danger"></div>
-                        </div>
-                        <div class="card-footer">
-                            <input type="submit" value="Update" class="btn btn-success"
-                                   style="width:auto" />
-                            <a asp-action="EditUser" asp-route-id="@Model.UserData.Id"
-                               class="btn btn-danger" style="width:auto">Cancel</a>
-                        </div>
+                            </div>
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-success" style="width:auto">Update</button>
+                                <a asp-area="Admin" asp-asp-page="/Users/Index"
+                                   class="btn btn-danger" style="width:auto">Cancel</a>
+                            </div>
                         </form>
 
                     </div>

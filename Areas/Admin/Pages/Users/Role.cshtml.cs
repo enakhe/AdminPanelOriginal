@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
@@ -30,7 +31,7 @@ namespace AdminPanel.Areas.Admin.Pages.User
         }
 
         public string ReturnUrl { get; set; }
-        public IList<ManageUserRolesViewModel> ManageUserRolesList { get; set; }
+        public IList<SelectListItem> RoleList { get; set; }
         public ApplicationUser UserData { get; set; }
 
         public async Task OnGet(string id, string returnUrl = null)
@@ -41,53 +42,29 @@ namespace AdminPanel.Areas.Admin.Pages.User
                 if (user != null)
                 {
                     UserData = user;
-                    var model = new List<ManageUserRolesViewModel>();
-                    foreach (var role in _roleManager.Roles)
-                    {
-                        var userRolesViewModel = new ManageUserRolesViewModel
-                        {
-                            RoleId = role.Id,
-                            RoleName = role.Name
-                        };
-                        if (await _userManager.IsInRoleAsync(user, role.Name))
-                        {
-                            userRolesViewModel.Selected = true;
-                        }
-                        else
-                        {
-                            userRolesViewModel.Selected = false;
-                        }
-                        model.Add(userRolesViewModel);
-                    }
-                    ManageUserRolesList = model;
+                    RoleList = await _roleManager.Roles.Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() }).ToListAsync();
                 }
             }
         }
 
-        public async Task<IActionResult> OnPostAsync(List<ManageUserRolesViewModel> model, string id, string returnUrl = null)
+        public async Task<IActionResult> OnPostAsync(List<string> RoleList, string id, string returnUrl = null)
         {
             if (ModelState.IsValid)
             {
                 var user = await _userManager.FindByIdAsync(id);
                 if (user != null)
                 {
-                    var roles = await _userManager.GetRolesAsync(user);
-                    var result = await _userManager.RemoveFromRolesAsync(user, roles);
-                    if (!result.Succeeded)
+                    UserData = user;
+                    if (RoleList.Count > 0)
                     {
-                        ModelState.AddModelError("", "Cannot remove user existing roles");
-                        return Page();
-                    }
-                    result = await _userManager.AddToRolesAsync(user, model.Where(x => x.Selected).Select(y => y.RoleName));
-                    if (!result.Succeeded)
-                    {
-                        ModelState.AddModelError("", "Cannot add selected roles to user");
-                        return Page();
-                    }
-                    if (result.Succeeded)
-                    {
+                        foreach (var roleList in RoleList)
+                        {
+                            var role = await _roleManager.FindByIdAsync(roleList);
+                            await _userManager.AddToRoleAsync(user, role.ToString());
+                        }
                         return RedirectToPage("/Users/Index", new { area = "Admin" });
                     }
+                    return Page();
                 }
             }
             return Page();

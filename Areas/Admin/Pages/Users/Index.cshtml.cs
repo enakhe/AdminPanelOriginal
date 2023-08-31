@@ -26,7 +26,10 @@ namespace AdminPanel.Areas.Admin.Pages.User
         public string ReturnUrl { get; set; }
         public IList<UserRolesViewModel> UserRoleList { get; set; }
 
-        public async Task OnGet(string returnUrl = null)
+        [TempData]
+        public string StatusMessage { get; set; }
+
+        public async Task OnGet(string statusMessage, string returnUrl = null)
         {
             ReturnUrl = returnUrl;
             if (ModelState.IsValid)
@@ -45,6 +48,7 @@ namespace AdminPanel.Areas.Admin.Pages.User
                     thisViewModel.Roles = await GetUserRoles(user);
                     userRolesViewModel.Add(thisViewModel);
                 }
+                StatusMessage = statusMessage;
                 UserRoleList = userRolesViewModel;
             }
         }

@@ -21,11 +21,15 @@ namespace AdminPanel.Areas.Admin.Pages.Roles
         public string ReturnUrl { get; set; }
         public IList<IdentityRole> RoleList { get; set; }
 
-        public async Task OnGet(string returnUrl = null)
+        [TempData]
+        public string StatusMessage { get; set; }
+
+        public async Task OnGet(string statusMessage, string returnUrl = null)
         {
             ReturnUrl = returnUrl;
             if (ModelState.IsValid)
             {
+                StatusMessage = statusMessage;
                 RoleList = await _roleManager.Roles.Where(role => !role.Name.Contains("SuperAdmin")).ToListAsync();
             }
         }

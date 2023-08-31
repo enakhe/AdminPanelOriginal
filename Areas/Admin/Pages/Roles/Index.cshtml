@@ -24,6 +24,9 @@
     </section>
     <section class="content">
         <div class="container-fluid">
+            <div class="col-md-12">
+                <partial name="_StatusMessage" for="StatusMessage" />
+            </div>
             <form id="createForm needs-validation" method="post" asp-area="Admin" asp-page="/Roles/Create">
                 <div class="row align-items-center">
                     <div class="col-md-10">

@@ -19,6 +19,9 @@ namespace AdminPanel.Areas.Admin.Pages.Roles
 
         public string ReturnUrl { get; set; }
 
+        [TempData]
+        public string StatusMessage { get; set; }
+
         public void OnGet()
         {
         }
@@ -33,10 +36,12 @@ namespace AdminPanel.Areas.Admin.Pages.Roles
                 }
                 else
                 {
-                    return RedirectToPage("/Roles/Index", new { area = "Admin" });
+                    StatusMessage = "Error, input required field";
+                    return RedirectToPage("/Roles/Index", new { area = "Admin", statusMessage = StatusMessage });
                 }
             }
-            return RedirectToPage("/Roles/Index", new { area = "Admin" });
+            StatusMessage = "Successfully added role";
+            return RedirectToPage("/Roles/Index", new { area = "Admin", statusMessage = StatusMessage });
         }
     }
 }

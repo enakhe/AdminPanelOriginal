@@ -70,3 +70,8 @@ body {
 .multiselect-container {
     width: 600px !important;
 }
+
+.btn-close {
+    color: white !important;
+    opacity: 1;
+}

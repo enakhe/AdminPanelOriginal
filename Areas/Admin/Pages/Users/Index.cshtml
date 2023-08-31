@@ -26,9 +26,12 @@
     </section>
     <section class="content">
         <div class="container-fluid">
-            <div class="row align-items-center mb-2">
+            <div class="row align-items-center">
                 <div class="col-md-2">
-                    <a asp-area="Admin" asp-page="/Users/Create" class="btn btn-success shadow-none">Create</a>
+                    <a asp-area="Admin" asp-page="/Users/Create" class="btn btn-success py-2 px-4 shadow-none">Create</a>
+                </div>
+                <div class="col-md-10">
+                    <partial name="_StatusMessage" for="StatusMessage" />
                 </div>
             </div>
             <div class="row">

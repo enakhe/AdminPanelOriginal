@@ -56,6 +56,9 @@ namespace AdminPanel.Areas.Admin.Pages.User
 
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
+        [TempData]
+        public string StatusMessage { get; set; }
+
         public async Task OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
@@ -105,7 +108,8 @@ namespace AdminPanel.Areas.Admin.Pages.User
                     }
                     else
                     {
-                        return RedirectToPage("/Users/Index", new { area = "Admin" });
+                        StatusMessage = "Successfully added user";
+                        return RedirectToPage("/Users/Index", new { area = "Admin", statusMessage = StatusMessage });
                     }
                 }
                 foreach (var error in result.Errors)

@@ -62,3 +62,11 @@ body {
 .buttons-print{
     margin-right: 3px;
 }
+
+.multiselect {
+    width: 600px !important;
+}
+
+.multiselect-container {
+    width: 600px !important;
+}

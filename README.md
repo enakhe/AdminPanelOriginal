@@ -28,7 +28,7 @@
 > * Clone the project or download the project zip folder
 
 ### Known Bugs
-> No bug found. Although, project is still on development
+> * Although, project is still on development, the edit user panel isn't updating profile image
 
 ### Licence
 > MIT

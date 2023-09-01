@@ -1,5 +1,5 @@
-# Sam's Shelter
-### Contributor
+# Admin Panel
+### Developer
 > * Name: Izuagbe Samuel
 > * Email: izuagbesam@gmail.com
 > * GitHub: Enakhe
@@ -23,11 +23,12 @@
 > The project's objectives include simplifying user onboarding and offboarding processes, providing audit trails for monitoring user activities, and supporting scalability to adapt to evolving business needs. With a user-friendly admin panel, integration options, and compliance with data protection regulations, this system will be an invaluable asset in today's digital landscape.
 
 ### Setup/Installation Requirement
-> 
-> 
+> * Go to the project [repository on GitHub](https://github.com/enakhe/AdminPanelOriginal)
+> * Copy the remote URL 
+> * Clone the project from GitBash or download the project zip folder
 
 ### Known Bugs
-> No bug found
+> No bug found. Although project UI and designs still on development
 
 ### Licence
 > MIT

@@ -18,5 +18,8 @@ namespace AdminPanel
         [Required]
         [Display(Name = "Last name")]
         public string LastName { get; set; }
+
+        [Display(Name = "Profile Picture")]
+        public IFormFile ProfilePicture { get; set; }
     }
 }

@@ -6,7 +6,7 @@
 > * Phone number: 09069477106
 
 ### Brief Desctiption
-> A project to handle a full functionality of user management and role management.
+> A project to handle the full functionality of user management and role management.
 
 ### Technology Used
 > * C#
@@ -18,11 +18,13 @@
 
 
 ## Project Description
-> his screenshot shows a very basic README that incorporates all of the required items. It doesn't look fancy but it does use basic Markdown such as headings and bullets to make it more readable. A README that looks like this is perfectly fine for now. However, keep in mind that your portfolio projects (and any projects that you are really proud of) should have more visually appealing READMEs. 
+>  The User and Role Management System project is a critical undertaking for organizations seeking to streamline user access control and enhance security. This comprehensive solution will empower administrators to efficiently manage user accounts and roles, enabling them to assign and revoke permissions based on well-defined roles. By implementing role-based access control (RBAC) and robust authentication mechanisms, the system will bolster data security and ensure that users have the appropriate access to resources.
+
+> The project's objectives include simplifying user onboarding and offboarding processes, providing audit trails for monitoring user activities, and supporting scalability to adapt to evolving business needs. With a user-friendly admin panel, integration options, and compliance with data protection regulations, this system will be an invaluable asset in today's digital landscape.
 
 ### Setup/Installation Requirement
-> * Clone the project from the repository in [GitHub](https://www.github.com/IzuagbeSamuel/resort)
-> * Navigate to the project root and open the index file on your browser
+> 
+> 
 
 ### Known Bugs
 > No bug found

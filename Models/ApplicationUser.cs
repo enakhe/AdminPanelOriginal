@@ -11,6 +11,7 @@ namespace AdminPanel.Models
         public string LastName { get; set; }
         public string FullName { get; set; }
         public DateTime DateCreated { get; set; } = DateTime.Now;
+        public byte[] ProfilePicture { get; set; }
         public int UsernameChangeLimit { get; set; } = 10;
     }
 }

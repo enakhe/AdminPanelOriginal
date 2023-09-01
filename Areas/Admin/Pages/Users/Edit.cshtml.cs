@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.CodeAnalysis.CSharp;
+using System.Text.RegularExpressions;
 
 namespace AdminPanel.Areas.Admin.Pages.Users
 {
@@ -59,32 +60,35 @@ namespace AdminPanel.Areas.Admin.Pages.Users
                     var model = new List<ManageUserRolesViewModel>();
                     foreach (var role in _roleManager.Roles)
                     {
-                        var userRolesViewModel = new ManageUserRolesViewModel
+                        if (!role.Name.Contains("SuperAdmin"))
                         {
-                            RoleId = role.Id,
-                            RoleName = role.Name
-                        };
-                        if (await _userManager.IsInRoleAsync(user, role.Name))
-                        {
-                            userRolesViewModel.Selected = true;
+                            var userRolesViewModel = new ManageUserRolesViewModel
+                            {
+                                RoleId = role.Id,
+                                RoleName = role.Name
+                            };
+                            if (await _userManager.IsInRoleAsync(user, role.Name))
+                            {
+                                userRolesViewModel.Selected = true;
+                            }
+                            else
+                            {
+                                userRolesViewModel.Selected = false;
+                            }
+                            model.Add(userRolesViewModel);
                         }
-                        else
-                        {
-                            userRolesViewModel.Selected = false;
-                        }
-                        model.Add(userRolesViewModel);
                     }
                     RoleList = model;
                 }
             }
         }
 
-        public async Task<IActionResult> OnPostAsync(List<ManageUserRolesViewModel> RoleList)
+        public async Task<IActionResult> OnPostAsync(List<ManageUserRolesViewModel> RoleList, string id)
         {
-            ApplicationUser user = await _userManager.GetUserAsync(User);
+            ApplicationUser user = await _userManager.FindByIdAsync(id);
             if (user == null)
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                return NotFound($"Unable to load user with ID '{user.Id}'.");
             }
 
             if (!ModelState.IsValid)
@@ -99,16 +103,17 @@ namespace AdminPanel.Areas.Admin.Pages.Users
 
             if (Input.FirstName != firstName)
             {
-                user.FirstName = Input.FirstName;
+                user.FirstName = Regex.Replace(Input.FirstName, "^[a-z]", c => c.Value.ToUpper());
                 _ = await _userManager.UpdateAsync(user);
             }
 
             if (Input.LastName != lastName)
             {
-                user.LastName = Input.LastName;
+                user.LastName = Regex.Replace(Input.LastName, "^[a-z]", c => c.Value.ToUpper());
                 _ = await _userManager.UpdateAsync(user);
             }
 
+            user.FullName = Regex.Replace(Input.FirstName, "^[a-z]", c => c.Value.ToUpper()) + " " + Regex.Replace(Input.LastName, "^[a-z]", c => c.Value.ToUpper());
 
             if (Input.Email != email)
             {

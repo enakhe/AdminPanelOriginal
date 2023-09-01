@@ -20,6 +20,7 @@ using Microsoft.Extensions.Logging;
 using System.Text.RegularExpressions;
 using AdminPanel.Data;
 using AdminPanel.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace AdminPanel.Areas.Admin.Pages.User
 {
@@ -57,60 +58,27 @@ namespace AdminPanel.Areas.Admin.Pages.User
 
         public string ReturnUrl { get; set; }
 
-        public IList<AuthenticationScheme> ExternalLogins { get; set; }
-
         [TempData]
         public string StatusMessage { get; set; }
 
-        public IList<ManageUserRolesViewModel> RoleList { get; set; }
+        public IList<IdentityRole> RoleList { get; set; }
 
 
-        public void OnGetAsync(string returnUrl = null)
+        public async void OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
-            var model = new List<ManageUserRolesViewModel>();
-            foreach (var role in _roleManager.Roles)
+            if (ModelState.IsValid)
             {
-                if (!role.Name.Contains("SuperAdmin"))
-                {
-                    var userRolesViewModel = new ManageUserRolesViewModel
-                    {
-                        RoleId = role.Id,
-                        RoleName = role.Name
-                    };
-                    model.Add(userRolesViewModel);
-                }
+                RoleList = await _roleManager.Roles.ToListAsync();
             }
-            RoleList = model;
         }
 
         public async Task<IActionResult> OnPostAsync(List<ManageUserRolesViewModel> RoleList, string returnUrl = null)
         {
-            returnUrl ??= Url.Content("~/");
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            returnUrl ??= Url.Page("/ManageUsers/Index");
             if (ModelState.IsValid)
             {
-                int year = DateTime.Now.Year;
                 var user = new ApplicationUser();
-
-                user.UserName = string.Concat("ADPA", user.Id.ToString().AsSpan(0, 3), year.ToString().ToUpper());
-                user.FirstName = Regex.Replace(Input.FirstName, "^[a-z]", c => c.Value.ToUpper());
-                user.LastName = Regex.Replace(Input.LastName, "^[a-z]", c => c.Value.ToUpper());
-                user.FullName = Regex.Replace(Input.FirstName, "^[a-z]", c => c.Value.ToUpper()) + " " + Regex.Replace(Input.LastName, "^[a-z]", c => c.Value.ToUpper());
-
-                using (var dataStream = new MemoryStream())
-                {
-                    await Input.ProfilePicture.CopyToAsync(dataStream);
-                    if (dataStream.Length < 2097152)
-                    {
-                        user.ProfilePicture = dataStream.ToArray();
-                        await _userManager.UpdateAsync(user);
-                    }
-                    else
-                    {
-                        ModelState.AddModelError("File", "The file is too large");
-                    }
-                }
 
                 await _userStore.SetUserNameAsync(user, user.UserName, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
@@ -118,6 +86,25 @@ namespace AdminPanel.Areas.Admin.Pages.User
 
                 if (result.Succeeded)
                 {
+                    user.UserName = Input.UserName;
+                    user.FirstName = Regex.Replace(Input.FirstName, "^[a-z]", c => c.Value.ToUpper());
+                    user.LastName = Regex.Replace(Input.LastName, "^[a-z]", c => c.Value.ToUpper());
+                    user.FullName = Regex.Replace(Input.FirstName, "^[a-z]", c => c.Value.ToUpper()) + " " + Regex.Replace(Input.LastName, "^[a-z]", c => c.Value.ToUpper());
+
+                    using (var dataStream = new MemoryStream())
+                    {
+                        await Input.ProfilePicture.CopyToAsync(dataStream);
+                        if (dataStream.Length < 2097152)
+                        {
+                            user.ProfilePicture = dataStream.ToArray();
+                            await _userManager.UpdateAsync(user);
+                        }
+                        else
+                        {
+                            ModelState.AddModelError("File", "The file is too large");
+                        }
+                    }
+
                     var roles = await _userManager.GetRolesAsync(user);
                     var result2 = await _userManager.RemoveFromRolesAsync(user, roles);
                     if (!result2.Succeeded)

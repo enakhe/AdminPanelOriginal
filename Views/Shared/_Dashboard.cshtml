@@ -2,7 +2,9 @@
 @using AdminPanel.Data
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
-
+@{
+    #nullable disable
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -130,27 +132,76 @@
                         <i class="fa-solid fa-th-large"></i>
                     </a>
                 </li>
+                <li class="nav-item">
+                    @{
+                        if (User != null)
+                        {
+                            if (UserManager.GetUserAsync(User).Result.ProfilePicture != null)
+                            {
+                                <a class="my-list-link" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">
+                                    <img style="width: 30px; height: 30px; object-fit: cover; border-radius: 30px;" src="data:image/*;base64,@(Convert.ToBase64String(UserManager.GetUserAsync(User).Result.ProfilePicture))">
+                                </a>
+                            }
+                            else
+                            {
+                                <img style="width: 30px; height: 30px; object-fit: cover; border-radius: 30px;" src="~/img//user.png">
+                            }
+                        }
+
+                    }
+                </li>
             </ul>
         </nav>
         <!-- /.navbar -->
         <!-- Main Sidebar Container -->
         <aside class="main-sidebar bg-dark elevation-4">
             <!-- Brand Logo -->
-            <a asp-area="" asp-controller="Home" asp-action="Index" class="brand-link">
-                <span class="brand-text font-weight-light">Admin Panel</span>
-            </a>
+            @{
+                if (User != null)
+                {
+                    if (User.IsInRole("SuperAdmin"))
+                    {
+                        <a asp-area="" asp-controller="Home" asp-action="Index" class="brand-link">
+                            <span class="brand-text font-weight-light">Admin Panel</span>
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-area="" asp-controller="Home" asp-action="Index" class="brand-link">
+                            <span class="brand-text font-weight-light">User Panel</span>
+                        </a>
+                    }
+                }
+            }
+
 
             <!-- Sidebar -->
             <div class="sidebar">
                 <!-- Sidebar user panel (optional) -->
-                <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+                <div class="user-panel mt-3 align-items-center pb-3 mb-3 d-flex">
                     <div class="image mx-1">
-                        <i class="fa-solid fa-circle-user text-light"></i>
+                        @{
+                            if (User != null)
+                            {
+                                if (UserManager.GetUserAsync(User).Result.ProfilePicture != null)
+                                {
+                                    <a class="my-list-link" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">
+                                        <img style="width: 30px; height: 30px; object-fit: cover; border-radius: 30px;" src="data:image/*;base64,@(Convert.ToBase64String(UserManager.GetUserAsync(User).Result.ProfilePicture))">
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a class="my-list-link" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">My Account</a>
+                                }
+                            }
+
+                        }
                     </div>
                     <div class="row align-items-start">
                         <a href="#" class="d-block text-light">
                             @{
-                                if (User != null){
+                                if (User != null)
+                                {
                                     if (UserManager.GetUserAsync(User).Result?.FullName != null)
                                     {
                                         var fullname = UserManager.GetUserAsync(User).Result?.FirstName + " " + UserManager.GetUserAsync(User).Result?.LastName;

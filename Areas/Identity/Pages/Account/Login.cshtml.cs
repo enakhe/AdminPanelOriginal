@@ -84,7 +84,7 @@ namespace AdminPanel.Areas.Identity.Pages.Account
                     }
                     else if (roles.Contains("Regular"))
                     {
-                        return RedirectToPage("/Dashboard/Index", new { area = "Regular" });
+                        return RedirectToPage("/Dashboard/Index", new { area = "User" });
                     }
                     else
                     {

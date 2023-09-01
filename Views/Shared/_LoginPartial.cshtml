@@ -2,7 +2,9 @@
 @using AdminPanel.Models
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
-
+@{
+    #nullable disable
+}
 <ul class="navbar-nav">
 @if (SignInManager.IsSignedIn(User))
 {
@@ -20,9 +22,23 @@
                 }
             </a>
             <ul class="dropdown-menu">
-                <li>
-                    <a class="nav-link text-dark dropdown-item" asp-area="Admin" asp-page="/Dashboard/Index">Dashboard</a>
-                </li>
+                @{
+                    if (User != null)
+                    {
+                        if (User.IsInRole("SuperAdmin"))
+                        {
+                            <li>
+                                <a class="nav-link text-dark dropdown-item" asp-area="Admin" asp-page="/Dashboard/Index">Dashboard</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li>
+                                <a class="nav-link text-dark dropdown-item" asp-area="User" asp-page="/Dashboard/Index">Dashboard</a>
+                            </li>
+                        }
+                    }
+                }
                 <li>
                     <a class="nav-link text-dark dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">Manage Account</a>
                 </li>
@@ -30,7 +46,7 @@
         </li>
     <li class="nav-item">
         <form  class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-            <button  type="submit" class="nav-link btn btn-link text-dark">Logout</button>
+            <button  type="submit" class="nav-link btn shadow-none btn-link text-dark">Logout</button>
         </form>
     </li>
 }
@@ -40,7 +56,9 @@ else
         <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register</a>
     </li> *@
     <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
+            <button class="btn px-4 py-0 btn-success text-light">
+                <a class="nav-link text-light" asp-area="Identity" asp-page="/Account/Login">Login</a>
+            </button>
     </li>
 }
 </ul>

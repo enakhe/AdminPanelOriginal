@@ -6,49 +6,65 @@
     Layout = "_Auth";
 }
 
-<section class="d-flex justify-content-center align-items-center h-87">
-    <div class="card rounded top">
+<div class="card card-outline primary-border">
+    <div class="card-header text-center">
+        <a href="/" class="h4">
+            Admin Panel
+        </a>
+    </div>
+    <div class="card-body">
+        <h4 class="login-box-msg">Login</h4>
         <form id="account" method="post">
-            <div class="bg-dark rounded-top center p-0">
-                <img src="~/img/P.png" alt="Admin Panel" width="90" height="50">
-            </div>
-            <div class="p-4">
-                <h4>Use a local account to log in</h4>
-                <hr />
-                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Username" class="form-control shadow-none" autocomplete="username" aria-required="true" placeholder="Username" />
-                    <label asp-for="Input.Username" class="form-label">Username</label>
-                    <span asp-validation-for="Input.Username" class="text-danger"></span>
-                </div>
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Password" class="form-control shadow-none" autocomplete="current-password" aria-required="true" placeholder="password" />
-                    <label asp-for="Input.Password" class="form-label">Password</label>
-                    <span asp-validation-for="Input.Password" class="text-danger"></span>
-                </div>
-                <div class="checkbox mb-3">
-                    <label asp-for="Input.RememberMe" class="form-label shadow-none">
-                        <input class="form-check-input" asp-for="Input.RememberMe" />
-                        @Html.DisplayNameFor(m => m.Input.RememberMe)
-                    </label>
-                </div>
-                <div>
-                    <button id="login-submit" type="submit" class="w-100 shadow-none btn btn-lg btn-success">Log in</button>
-                </div>
-                <div class="py-3 center">
-                    <div>
-                        <p>
-                            <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
-                        </p>
-                        <p>
-                            <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
-                        </p>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="input-group mb-3">
+                <input type="text" class="form-control shadow-none" placeholder="Username" asp-for="Input.Username"
+                       autocomplete="username" aria-required="true">
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-envelope"></span>
                     </div>
                 </div>
             </div>
+            <span asp-validation-for="Input.Username" class="text-danger"></span>
+
+            <div class="input-group mb-3">
+                <input type="password" class="form-control shadow-none" placeholder="Password" asp-for="Input.Password"
+                       autocomplete="current-password" aria-required="true">
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-lock"></span>
+                    </div>
+                </div>
+            </div>
+            <span asp-validation-for="Input.Password" class="text-danger"></span>
+
+            <div class="icheck-primary shadow-none">
+                <input type="checkbox" class="shadow-none" id="remember" asp-for="Input.RememberMe">
+                <label for="remember" asp-for="Input.RememberMe">
+                    Remember Me
+                </label>
+            </div>
+
+            <button id="login-submit" type="submit" class="btn btn-success shadow-none w-100 btn-block">Sign In</button>
         </form>
+
+        <div class="text-center my-2">
+            <p class="mb-1">
+                <a id="forgot-password" asp-page="./ForgotPassword" class="text-center">I forgot my password</a>
+            </p>
+            <p class="mb-0">
+                <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="text-center">Register</a>
+            </p>
+            <p class="mb-0">
+                <a id="resend-confirmation" asp-page="./ResendEmailConfirmation" class="text-center">
+                    Resend email
+                    confirmation
+                </a>
+            </p>
+        </div>
+
     </div>
-</section>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

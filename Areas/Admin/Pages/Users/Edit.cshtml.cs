@@ -43,6 +43,7 @@ namespace AdminPanel.Areas.Admin.Pages.Users
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Email = user.Email,
+                
             };
 
             UserProfilePicture = user.ProfilePicture;
@@ -86,81 +87,89 @@ namespace AdminPanel.Areas.Admin.Pages.Users
             }
         }
 
-        public async Task<IActionResult> OnPostAsync(List<ManageUserRolesViewModel> RoleList, string id)
+        public async Task<IActionResult> OnPostAsync(List<ManageUserRolesViewModel> RoleList, string id, string returnUrl = null)
         {
-            ApplicationUser user = await _userManager.FindByIdAsync(id);
-            if (user == null)
+            if (ModelState.IsValid)
             {
-                return NotFound($"Unable to load user with ID '{user.Id}'.");
-            }
+                ApplicationUser user = await _userManager.FindByIdAsync(id);
+                if (user == null)
+                {
+                    return NotFound($"Unable to load user with ID '{user.Id}'.");
+                }
 
-            if (!ModelState.IsValid)
-            {
-                 LoadAsync(user);
-                return Page();
-            }
+                if (!ModelState.IsValid)
+                {
+                    LoadAsync(user);
+                    return Page();
+                }
 
-            string firstName = user.FirstName;
-            string lastName = user.LastName;
-            string email = user.Email;
-            byte[] profileImage = user.ProfilePicture;
+                string firstName = user.FirstName;
+                string lastName = user.LastName;
+                string email = user.Email;
+                byte[] profileImage = user.ProfilePicture;
 
-            if (Input.FirstName != firstName)
-            {
-                user.FirstName = Regex.Replace(Input.FirstName, "^[a-z]", c => c.Value.ToUpper());
+                if (Input.FirstName != firstName)
+                {
+                    user.FirstName = Regex.Replace(Input.FirstName, "^[a-z]", c => c.Value.ToUpper());
+                    _ = await _userManager.UpdateAsync(user);
+                }
+
+                if (Input.LastName != lastName)
+                {
+                    user.LastName = Regex.Replace(Input.LastName, "^[a-z]", c => c.Value.ToUpper());
+                    _ = await _userManager.UpdateAsync(user);
+                }
+
+                user.FullName = Regex.Replace(Input.FirstName, "^[a-z]", c => c.Value.ToUpper()) + " " + Regex.Replace(Input.LastName, "^[a-z]", c => c.Value.ToUpper());
+
+                if (Input.Email != email)
+                {
+                    IdentityResult setEmail = await _userManager.SetEmailAsync(user, Input.Email);
+                    if (!setEmail.Succeeded)
+                    {
+                        StatusMessage = "Unexpected error when trying to set phone number.";
+                        return RedirectToPage();
+                    }
+                }
+
+                if (Input.ProfilePicture != null)
+                {
+                    using (var dataStream = new MemoryStream())
+                    {
+                        await Input.ProfilePicture.CopyToAsync(dataStream);
+                        if (dataStream.Length < 2097152)
+                        {
+                            user.ProfilePicture = dataStream.ToArray();
+                            await _userManager.UpdateAsync(user);
+                        }
+                        else
+                        {
+                            ModelState.AddModelError("File", "The file is too large");
+                        }
+                    }
+                }
+
+                var roles = await _userManager.GetRolesAsync(user);
+                var result = await _userManager.RemoveFromRolesAsync(user, roles);
+                if (!result.Succeeded)
+                {
+                    ModelState.AddModelError("", "Cannot remove user existing roles");
+                    return Page();
+                }
+                result = await _userManager.AddToRolesAsync(user, RoleList.Where(x => x.Selected).Select(y => y.RoleName));
+                if (!result.Succeeded)
+                {
+                    ModelState.AddModelError("", "Cannot add selected roles to user");
+                    return Page();
+                }
+
+
                 _ = await _userManager.UpdateAsync(user);
+                StatusMessage = "User profile has been updated";
+                return RedirectToPage("/Users/Index", new { area = "Admin", statusMessage = StatusMessage });
             }
-
-            if (Input.LastName != lastName)
-            {
-                user.LastName = Regex.Replace(Input.LastName, "^[a-z]", c => c.Value.ToUpper());
-                _ = await _userManager.UpdateAsync(user);
-            }
-
-            user.FullName = Regex.Replace(Input.FirstName, "^[a-z]", c => c.Value.ToUpper()) + " " + Regex.Replace(Input.LastName, "^[a-z]", c => c.Value.ToUpper());
-
-            if (Input.Email != email)
-            {
-                IdentityResult setEmail = await _userManager.SetEmailAsync(user, Input.Email);
-                if (!setEmail.Succeeded)
-                {
-                    StatusMessage = "Unexpected error when trying to set phone number.";
-                    return RedirectToPage();
-                }
-            }
-
-            using (var dataStream = new MemoryStream())
-            {
-                await Input.ProfilePicture.CopyToAsync(dataStream);
-                if (dataStream.Length < 2097152)
-                {
-                    user.ProfilePicture = dataStream.ToArray();
-                    await _userManager.UpdateAsync(user);
-                }
-                else
-                {
-                    ModelState.AddModelError("File", "The file is too large");
-                }
-            }
-
-            var roles = await _userManager.GetRolesAsync(user);
-            var result = await _userManager.RemoveFromRolesAsync(user, roles);
-            if (!result.Succeeded)
-            {
-                ModelState.AddModelError("", "Cannot remove user existing roles");
-                return Page();
-            }
-            result = await _userManager.AddToRolesAsync(user, RoleList.Where(x => x.Selected).Select(y => y.RoleName));
-            if (!result.Succeeded)
-            {
-                ModelState.AddModelError("", "Cannot add selected roles to user");
-                return Page();
-            }
-
-
-            _ = await _userManager.UpdateAsync(user);
-            StatusMessage = "User profile has been updated";
-            return RedirectToPage("/Users/Index", new { area = "Admin", statusMessage = StatusMessage });
+            StatusMessage = "Error, something unexpected happened";
+            return Page();
         }
     }
 }

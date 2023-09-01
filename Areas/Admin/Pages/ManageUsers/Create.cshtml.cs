@@ -61,15 +61,28 @@ namespace AdminPanel.Areas.Admin.Pages.User
         [TempData]
         public string StatusMessage { get; set; }
 
-        public IList<IdentityRole> RoleList { get; set; }
+        public IList<ManageUserRolesViewModel> RoleList { get; set; }
 
 
-        public async void OnGetAsync(string returnUrl = null)
+        public void OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
             if (ModelState.IsValid)
             {
-                RoleList = await _roleManager.Roles.ToListAsync();
+                var model = new List<ManageUserRolesViewModel>();
+                foreach (var role in _roleManager.Roles)
+                {
+                    if (!role.Name.Contains("SuperAdmin"))
+                    {
+                        var userRolesViewModel = new ManageUserRolesViewModel
+                        {
+                            RoleId = role.Id,
+                            RoleName = role.Name
+                        };
+                        model.Add(userRolesViewModel);
+                    }
+                }
+                RoleList = model;
             }
         }
 
@@ -87,16 +100,26 @@ namespace AdminPanel.Areas.Admin.Pages.User
                 if (result.Succeeded)
                 {
                     user.UserName = Input.UserName;
-                    user.FirstName = Regex.Replace(Input.FirstName, "^[a-z]", c => c.Value.ToUpper());
-                    user.LastName = Regex.Replace(Input.LastName, "^[a-z]", c => c.Value.ToUpper());
-                    user.FullName = Regex.Replace(Input.FirstName, "^[a-z]", c => c.Value.ToUpper()) + " " + Regex.Replace(Input.LastName, "^[a-z]", c => c.Value.ToUpper());
 
+                    // Add Personal Info
+                    PersonalInfo personalInfo = new()
+                    {
+                        FirstName = Regex.Replace(Input.FirstName, "^[a-z]", c => c.Value.ToUpper()),
+                        LastName = Regex.Replace(Input.LastName, "^[a-z]", c => c.Value.ToUpper()),
+                        FullName = Regex.Replace(Input.FirstName, "^[a-z]", c => c.Value.ToUpper()) + " " + Regex.Replace(Input.LastName, "^[a-z]", c => c.Value.ToUpper()),
+                        DOB = Input.DOB,
+                        Gender = Input.Gender,
+
+                        UserId = user.Id
+                    };
+
+                    // Add Profile Picture
                     using (var dataStream = new MemoryStream())
                     {
                         await Input.ProfilePicture.CopyToAsync(dataStream);
                         if (dataStream.Length < 2097152)
                         {
-                            user.ProfilePicture = dataStream.ToArray();
+                            personalInfo.ProfilePicture = dataStream.ToArray();
                             await _userManager.UpdateAsync(user);
                         }
                         else
@@ -104,44 +127,55 @@ namespace AdminPanel.Areas.Admin.Pages.User
                             ModelState.AddModelError("File", "The file is too large");
                         }
                     }
+                    await _db.PersonalInfos.AddAsync(personalInfo);
 
+                    // Add Contact Info
+                    ContactInfo contactInfo = new()
+                    {
+                        HomeAddress = Input.HomeAddress,
+                        WorkAddress = Input.WorkAddress,
+                        OtherAddress = Input.OtherAddress,
+
+                        UserId = user.Id
+                    };
+                    await _db.ContactInfos.AddAsync(contactInfo);
+
+                    // Add Personalization Info
+                    PersonalizationInfo personalizationInfo = new()
+                    {
+                        IsAuthorized = Input.IsAuthorized,
+                        IsOnline = false,
+
+                        UserId = user.Id
+                    };
+                    await _db.PersonalizationInfos.AddAsync(personalizationInfo);
+
+                    // Add Logs Info
+                    LogsInfo logsInfo = new()
+                    {
+                        LastLogin = DateTime.Now,
+                        DateUpdated = DateTime.Now,
+
+                        UserId = user.Id
+                    };
+                    await _db.LogsInfos.AddAsync(logsInfo);
+
+
+                    // Assign Roles
                     var roles = await _userManager.GetRolesAsync(user);
-                    var result2 = await _userManager.RemoveFromRolesAsync(user, roles);
-                    if (!result2.Succeeded)
+                    var roleResult = await _userManager.AddToRolesAsync(user, RoleList.Where(x => x.Selected).Select(y => y.RoleName));
+
+                    if (roleResult.Succeeded)
                     {
-                        ModelState.AddModelError("", "Cannot remove user existing roles");
-                        return Page();
+                        await _userManager.UpdateAsync(user);
+                        _db.SaveChanges();
                     }
-                    result2 = await _userManager.AddToRolesAsync(user, RoleList.Where(x => x.Selected).Select(y => y.RoleName));
-                    if (!result2.Succeeded)
-                    {
-                        ModelState.AddModelError("", "Cannot add selected roles to user");
-                        return Page();
-                    }
-
-                    await _userManager.UpdateAsync(user);
-
-                    _logger.LogInformation("Admin created a new account with password.");
-
-                    var userId = await _userManager.GetUserIdAsync(user);
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    var callbackUrl = Url.Page(
-                        "/Account/ConfirmEmail",
-                        pageHandler: null,
-                        values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
-                        protocol: Request.Scheme);
-
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
                 }
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
-
-            // If we got this far, something failed, redisplay form
             return Page();
         }
 

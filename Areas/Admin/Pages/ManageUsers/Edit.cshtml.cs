@@ -1,11 +1,13 @@
 #nullable disable
 
+using AdminPanel.Data;
 using AdminPanel.Models;
 using AdminPanel.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
 
 namespace AdminPanel.Areas.Admin.Pages.Users
@@ -15,12 +17,14 @@ namespace AdminPanel.Areas.Admin.Pages.Users
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly ApplicationDbContext _db;
 
-        public EditModel(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, SignInManager<ApplicationUser> signInManager)
+        public EditModel(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, SignInManager<ApplicationUser> signInManager, ApplicationDbContext db)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _signInManager = signInManager;
+            _db = db;
         }
 
         public string ReturnUrl { get; set; }
@@ -36,17 +40,18 @@ namespace AdminPanel.Areas.Admin.Pages.Users
 
         public ApplicationUser UserData { get; set; }
 
-        public void LoadAsync(ApplicationUser user)
+        public async void LoadAsync(ApplicationUser user)
         {
+            PersonalInfo userPersonalInfo = await _db.PersonalInfos.FirstOrDefaultAsync(userPersonalInfo => userPersonalInfo.UserId == user.Id);
             Input = new RegisterInputModel
             {
-                FirstName = user.FirstName,
-                LastName = user.LastName,
+                FirstName = userPersonalInfo.FirstName,
+                LastName = userPersonalInfo.LastName,
                 Email = user.Email,
                 
             };
 
-            UserProfilePicture = user.ProfilePicture;
+            UserProfilePicture = userPersonalInfo.ProfilePicture;
             UserData = user;
         }
 

@@ -8,5 +8,8 @@ namespace AdminPanel.Models
         public string Id { get; set; } = Guid.NewGuid().ToString();
         public bool IsAuthorized { get; set; }
         public bool IsOnline { get; set; } = false;
+
+        public string UserId { get; set; }
+        public virtual ApplicationUser User { get; set; }
     }
 }

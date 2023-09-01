@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using System.Text.RegularExpressions;
 using AdminPanel.Data;
+using AdminPanel.ViewModels;
 
 namespace AdminPanel.Areas.Admin.Pages.User
 {
@@ -31,6 +32,7 @@ namespace AdminPanel.Areas.Admin.Pages.User
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly ILogger<CreateModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly RoleManager<IdentityRole> _roleManager;
         public readonly ApplicationDbContext _db;
 
         public CreateModel(
@@ -38,7 +40,7 @@ namespace AdminPanel.Areas.Admin.Pages.User
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
             ILogger<CreateModel> logger,
-            IEmailSender emailSender, ApplicationDbContext db)
+            IEmailSender emailSender, ApplicationDbContext db, RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _db = db;
@@ -47,6 +49,7 @@ namespace AdminPanel.Areas.Admin.Pages.User
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _roleManager = roleManager;
         }
 
         [BindProperty]
@@ -59,13 +62,29 @@ namespace AdminPanel.Areas.Admin.Pages.User
         [TempData]
         public string StatusMessage { get; set; }
 
-        public async Task OnGetAsync(string returnUrl = null)
+        public IList<ManageUserRolesViewModel> RoleList { get; set; }
+
+
+        public void OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            var model = new List<ManageUserRolesViewModel>();
+            foreach (var role in _roleManager.Roles)
+            {
+                if (!role.Name.Contains("SuperAdmin"))
+                {
+                    var userRolesViewModel = new ManageUserRolesViewModel
+                    {
+                        RoleId = role.Id,
+                        RoleName = role.Name
+                    };
+                    model.Add(userRolesViewModel);
+                }
+            }
+            RoleList = model;
         }
 
-        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        public async Task<IActionResult> OnPostAsync(List<ManageUserRolesViewModel> RoleList, string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
@@ -79,13 +98,26 @@ namespace AdminPanel.Areas.Admin.Pages.User
                 user.LastName = Regex.Replace(Input.LastName, "^[a-z]", c => c.Value.ToUpper());
                 user.FullName = Regex.Replace(Input.FirstName, "^[a-z]", c => c.Value.ToUpper()) + " " + Regex.Replace(Input.LastName, "^[a-z]", c => c.Value.ToUpper());
                 
-
                 await _userStore.SetUserNameAsync(user, user.UserName, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, "DummyUser$01");
 
                 if (result.Succeeded)
-                { 
+                {
+                    var roles = await _userManager.GetRolesAsync(user);
+                    var result2 = await _userManager.RemoveFromRolesAsync(user, roles);
+                    if (!result2.Succeeded)
+                    {
+                        ModelState.AddModelError("", "Cannot remove user existing roles");
+                        return Page();
+                    }
+                    result2 = await _userManager.AddToRolesAsync(user, RoleList.Where(x => x.Selected).Select(y => y.RoleName));
+                    if (!result2.Succeeded)
+                    {
+                        ModelState.AddModelError("", "Cannot add selected roles to user");
+                        return Page();
+                    }
+
                     await _userManager.UpdateAsync(user);
 
                     _logger.LogInformation("Admin created a new account with password.");

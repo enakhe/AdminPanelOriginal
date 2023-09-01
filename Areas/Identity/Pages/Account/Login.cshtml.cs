@@ -82,6 +82,15 @@ namespace AdminPanel.Areas.Identity.Pages.Account
                     {
                         return RedirectToPage("/Dashboard/Index", new { area = "Admin" });
                     }
+                    else if (roles.Contains("Regular"))
+                    {
+                        return RedirectToPage("/Dashboard/Index", new { area = "Regular" });
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, "Do not have access to login");
+                        return Page();
+                    }
                 }
                 if (result.RequiresTwoFactor)
                 {
@@ -94,7 +103,7 @@ namespace AdminPanel.Areas.Identity.Pages.Account
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    ModelState.AddModelError(string.Empty, "Invalid login attempt");
                     return Page();
                 }
             }

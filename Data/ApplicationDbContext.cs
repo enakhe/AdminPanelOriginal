@@ -7,6 +7,11 @@ namespace AdminPanel.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string>
     {
+        public DbSet<PersonalInfo> PersonalInfos { get; set; }
+        public DbSet<ContactInfo> ContactInfos { get; set; }
+        public DbSet<PersonalizationInfo> PersonalizationInfos { get; set; }
+        public DbSet<LogsInfo> LogsInfos { get; set; }
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {

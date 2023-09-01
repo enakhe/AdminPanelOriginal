@@ -13,5 +13,8 @@ namespace AdminPanel.Models
         public string Gender { get; set; }
         public byte[] ProfilePicture { get; set; }
         public int UsernameChangeLimit { get; set; } = 10;
+
+        public string UserId { get; set; }
+        public virtual ApplicationUser User { get; set; }
     }
 }

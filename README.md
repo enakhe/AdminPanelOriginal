@@ -2,7 +2,7 @@
 ### Developer
 > * Name: Izuagbe Samuel
 > * Email: izuagbesam@gmail.com
-> * GitHub: Enakhe
+> * GitHub: [enakhe](https://github.com/enakhe)
 > * Phone number: 09069477106
 
 ### Brief Desctiption
@@ -25,10 +25,10 @@
 ### Setup/Installation Requirement
 > * Go to the project [repository on GitHub](https://github.com/enakhe/AdminPanelOriginal)
 > * Copy the remote URL 
-> * Clone the project from GitBash or download the project zip folder
+> * Clone the project or download the project zip folder
 
 ### Known Bugs
-> No bug found. Although project UI and designs still on development
+> No bug found. Although, project is still on development
 
 ### Licence
 > MIT

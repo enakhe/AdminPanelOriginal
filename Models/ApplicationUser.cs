@@ -2,22 +2,26 @@
 
 using AdminPanel;
 using Microsoft.AspNetCore.Identity;
+using System.Net;
 
 namespace AdminPanel.Models
 {
     public class ApplicationUser : IdentityUser<string>
     {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string FullName { get; set; }
-        public byte[] ProfilePicture { get; set; }
-        public int UsernameChangeLimit { get; set; } = 10;
+        public ApplicationUser() 
+        {
+            this.Contact = new HashSet<ContactInfo>();
+            this.PersonalInfo = new HashSet<PersonalInfo>();
+            this.Personalization = new HashSet<PersonalizationInfo>();
+            this.Logs = new HashSet<LogsInfo>();
 
-        public bool isAuthorized { get; set; }
-        public bool isOnline { get; set; }
 
-        public DateTime DateCreated { get; set; } = DateTime.Now;
-        public DateTime LastLogin { get; set; }
+        }
+
+        public virtual ICollection<ContactInfo> Contact { get; set; }
+        public virtual ICollection<PersonalInfo> PersonalInfo { get; set; }
+        public virtual ICollection<PersonalizationInfo> Personalization { get; set; }
+        public virtual ICollection<LogsInfo> Logs { get; set; }
 
     }
 }

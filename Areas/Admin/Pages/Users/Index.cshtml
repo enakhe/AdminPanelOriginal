@@ -44,8 +44,8 @@
                             <table id="example1" class="table table-bordered table-hover">
                                 <thead>
                                     <tr>
-                                        <th>Username</th>
                                         <th>Full name</th>
+                                        <th>Username</th>
                                         <th>Email</th>
                                         <th>Roles</th>
                                         <th>Date created</th>
@@ -60,11 +60,26 @@
                                             {
                                                 <tr>
                                                     <td>
+                                                        @{
+                                                            if (user.ProfilePicture != null)
+                                                            {
+                                                                <a asp-action="" asp-controller="User">
+                                                                    <img class="user-image" src="data:image/*;base64,@(Convert.ToBase64String(user.ProfilePicture))"> @user.FullName
+                                                                </a>
+                                                            }
+                                                            else
+                                                            {
+                                                                <a asp-action="" asp-controller="User">
+                                                                    <img class="user-image" class="rounded-circle" object-fit:cover" src="~/img/user.png"> @user.FullName
+                                                                </a>
+                                                            }
+                                                        }
+                                                    </td>
+                                                    <td>
                                                         <a asp-action="" asp-controller="User">
                                                             @user.Username
                                                         </a>
                                                     </td>
-                                                    <td>@user.FullName</td>
                                                     <td>@user.Email</td>
                                                     <td>
                                                         @string.Join(" , ", user.Roles.ToList())
@@ -72,7 +87,7 @@
                                                     <td>@user.DateCreated.ToString("MMM dd, yyyy")</td>
                                                     <td class="dropdown">
                                                         <a class="text-dark p" href="#" data-toggle="dropdown" aria-expanded="false">
-                                                            <i class="fa-solid fa-ellipsis-vertical">M</i>
+                                                            <i class="fa-solid fa-ellipsis-vertical"></i>
                                                         </a>
                                                         <ul class="dropdown-menu dropdown-menu-md dropdown-menu-center">
                                                             <li class="dropdown-item">
@@ -101,8 +116,8 @@
                                 </tbody>
                                 <tfoot>
                                     <tr>
-                                        <th>Username</th>
                                         <th>Full name</th>
+                                        <th>Username</th>
                                         <th>Email</th>
                                         <th>Roles</th>
                                         <th>Date created</th>

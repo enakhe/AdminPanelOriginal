@@ -44,6 +44,7 @@ namespace AdminPanel.Areas.Admin.Pages.User
                     thisViewModel.Username = user.UserName;
                     thisViewModel.Email = user.Email;
                     thisViewModel.FullName = user.FullName;
+                    thisViewModel.ProfilePicture = user.ProfilePicture;
                     thisViewModel.DateCreated = user.DateCreated;
                     thisViewModel.Roles = await GetUserRoles(user);
                     userRolesViewModel.Add(thisViewModel);

@@ -1,14 +1,9 @@
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 
 namespace AdminPanel.Models
 {
-    public class ApplicationRole : IdentityRole
+    public class ApplicationRole : IdentityRole<string>
     {
-        public bool Selected { get; set; } = false;
-        public DateTime DateCreated { get; set; } = DateTime.Now;
-        public enum Roles
-        {
-            SuperAdmin,
-        }
+        public DateTime DateCreated { get; set; }
     }
 }

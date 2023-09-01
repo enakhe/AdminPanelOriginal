@@ -33,6 +33,7 @@
         <div class="container-fluid">
             <div class="d-flex justify-content-center my-3 align-items-center">
                 <div class="col-md-10">
+                    <partial name="_StatusMessage" for="StatusMessage" />
                     <div class="card">
                         <div class="card-header bg-dark">
                             <h3 class="card-title text-light">User | Edit</h3>
@@ -44,7 +45,7 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <form id="createForm needs-validation" method="post">
+                            <form id="createForm needs-validation" enctype="multipart/form-data" method="post">
                                 <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
 
                                 <div class="d-flex justify-content-center">
@@ -65,7 +66,7 @@
                                                 }
                                             }
 
-                                            <input class="form-control shadow-none my-3" asp-for="Input.ProfilePicture" onchange="document.getElementById('profilePicture').src = window.URL.createObjectURL(this.files[0])" type="file" id="formFile">
+                                            <input class="form-control shadow-none my-3" asp-for="Input.ProfilePicture" onchange="document.getElementById('profilePicture').src = window.URL.createObjectURL(this.files[0])" type="file" id="formFile" />
                                         </div>
                                     </div>
                                 </div>

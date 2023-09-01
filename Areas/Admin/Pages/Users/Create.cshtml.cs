@@ -97,7 +97,21 @@ namespace AdminPanel.Areas.Admin.Pages.User
                 user.FirstName = Regex.Replace(Input.FirstName, "^[a-z]", c => c.Value.ToUpper());
                 user.LastName = Regex.Replace(Input.LastName, "^[a-z]", c => c.Value.ToUpper());
                 user.FullName = Regex.Replace(Input.FirstName, "^[a-z]", c => c.Value.ToUpper()) + " " + Regex.Replace(Input.LastName, "^[a-z]", c => c.Value.ToUpper());
-                
+
+                using (var dataStream = new MemoryStream())
+                {
+                    await Input.ProfilePicture.CopyToAsync(dataStream);
+                    if (dataStream.Length < 2097152)
+                    {
+                        user.ProfilePicture = dataStream.ToArray();
+                        await _userManager.UpdateAsync(user);
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("File", "The file is too large");
+                    }
+                }
+
                 await _userStore.SetUserNameAsync(user, user.UserName, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, "DummyUser$01");

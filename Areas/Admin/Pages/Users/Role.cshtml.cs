@@ -47,20 +47,24 @@ namespace AdminPanel.Areas.Admin.Pages.User
                     var model = new List<ManageUserRolesViewModel>();
                     foreach (var role in _roleManager.Roles)
                     {
-                        var userRolesViewModel = new ManageUserRolesViewModel
+                        if (!role.Name.Contains("SuperAdmin"))
                         {
-                            RoleId = role.Id,
-                            RoleName = role.Name
-                        };
-                        if (await _userManager.IsInRoleAsync(user, role.Name))
-                        {
-                            userRolesViewModel.Selected = true;
+                            var userRolesViewModel = new ManageUserRolesViewModel
+                            {
+                                RoleId = role.Id,
+                                RoleName = role.Name
+                            };
+                            if (await _userManager.IsInRoleAsync(user, role.Name))
+                            {
+                                userRolesViewModel.Selected = true;
+                            }
+                            else
+                            {
+                                userRolesViewModel.Selected = false;
+                            }
+                            model.Add(userRolesViewModel);
                         }
-                        else
-                        {
-                            userRolesViewModel.Selected = false;
-                        }
-                        model.Add(userRolesViewModel);
+                        
                     }
                     RoleList = model;
                 }

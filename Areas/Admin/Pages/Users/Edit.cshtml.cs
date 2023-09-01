@@ -32,6 +32,8 @@ namespace AdminPanel.Areas.Admin.Pages.Users
 
         public IList<ManageUserRolesViewModel> RoleList { get; set; }
 
+        public byte[] UserProfilePicture { get; set; }
+
         public ApplicationUser UserData { get; set; }
 
         public void LoadAsync(ApplicationUser user)
@@ -43,6 +45,7 @@ namespace AdminPanel.Areas.Admin.Pages.Users
                 Email = user.Email,
             };
 
+            UserProfilePicture = user.ProfilePicture;
             UserData = user;
         }
 
@@ -100,6 +103,7 @@ namespace AdminPanel.Areas.Admin.Pages.Users
             string firstName = user.FirstName;
             string lastName = user.LastName;
             string email = user.Email;
+            byte[] profileImage = user.ProfilePicture;
 
             if (Input.FirstName != firstName)
             {
@@ -122,6 +126,20 @@ namespace AdminPanel.Areas.Admin.Pages.Users
                 {
                     StatusMessage = "Unexpected error when trying to set phone number.";
                     return RedirectToPage();
+                }
+            }
+
+            using (var dataStream = new MemoryStream())
+            {
+                await Input.ProfilePicture.CopyToAsync(dataStream);
+                if (dataStream.Length < 2097152)
+                {
+                    user.ProfilePicture = dataStream.ToArray();
+                    await _userManager.UpdateAsync(user);
+                }
+                else
+                {
+                    ModelState.AddModelError("File", "The file is too large");
                 }
             }
 

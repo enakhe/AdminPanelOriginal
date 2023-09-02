@@ -1,6 +1,6 @@
 ﻿@page
 @using AdminPanel.ViewModels
-@model AdminPanel.Areas.Admin.Pages.User.RoleModel
+@model AdminPanel.Areas.Admin.Pages.User.AssignRoles
 @{
     ViewData["Title"] = "Users";
     Layout = "_Dashboard";
@@ -14,9 +14,9 @@
                 <div class="col-sm-6">
                     <h1 class="m-0">Manage User Roles</h1>
                     @{
-                        if (Model.UserData != null)
+                        if (Model.PersonalInfo != null)
                         {
-                            <p>Add and Remove Roles for <strong>User / @Model.UserData.FullName</strong></p>
+                            <p>Add and Remove Roles for <strong>User / @Model.PersonalInfo.FullName</strong></p>
                         }
                     }
                 </div>

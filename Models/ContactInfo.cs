@@ -9,7 +9,7 @@ namespace AdminPanel.Models
         public string HomeAddress { get; set; }
         public string WorkAddress { get; set; }
         public string OtherAddress { get; set; }
-
+        public string ZipCode { get; set; }
         public string UserId { get; set; }
         public virtual ApplicationUser User { get; set; }
     }

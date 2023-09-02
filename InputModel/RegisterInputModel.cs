@@ -58,6 +58,10 @@ namespace AdminPanel
         [Display(Name = "OtherAddress")]
         public string OtherAddress { get; set; }
 
+        [PersonalData]
+        [Display(Name = "ZipCode")]
+        public string ZipCode { get; set; }
+
         [Required]
         [Display(Name = "Authorize")]
         public bool IsAuthorized { get; set; }

@@ -14,13 +14,13 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 namespace AdminPanel.Areas.Admin.Pages.User
 {
     [Authorize(Roles = "SuperAdmin")]
-    public class RoleModel : PageModel
+    public class AssignRoles : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;
         public readonly ApplicationDbContext _db;
         private readonly RoleManager<IdentityRole> _roleManager;
 
-        public RoleModel(
+        public AssignRoles(
             UserManager<ApplicationUser> userManager,
             ApplicationDbContext db,
             RoleManager<IdentityRole> roleManager)
@@ -32,7 +32,7 @@ namespace AdminPanel.Areas.Admin.Pages.User
 
         public string ReturnUrl { get; set; }
         public IList<ManageUserRolesViewModel> RoleList { get; set; }
-        public ApplicationUser UserData { get; set; }
+        public ApplicationUser PersonalInfo { get; set; }
 
         [TempData]
         public string StatusMessage { get; set; }
@@ -43,7 +43,8 @@ namespace AdminPanel.Areas.Admin.Pages.User
                 var user = await _userManager.FindByIdAsync(id);
                 if (user != null)
                 {
-                    UserData = user;
+
+                    PersonalInfo = user;
                     var model = new List<ManageUserRolesViewModel>();
                     foreach (var role in _roleManager.Roles)
                     {

@@ -1,4 +1,5 @@
 ﻿@page
+@using AdminPanel.Models
 @model AdminPanel.Areas.Admin.Pages.Roles.IndexModel
 @{
     ViewData["Title"] = "Roles";
@@ -58,7 +59,7 @@
                                     @{
                                         if (Model.RoleList != null)
                                         {
-                                            @foreach (IdentityRole role in Model.RoleList)
+                                            @foreach (ApplicationRole role in Model.RoleList)
                                             {
                                                 <tr>
                                                     <td>

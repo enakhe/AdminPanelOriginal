@@ -10,10 +10,10 @@ namespace AdminPanel.Areas.Admin.Pages.Dashboard
 {
     public class IndexModel : PageModel
     {
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public IndexModel(RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager)
+        public IndexModel(RoleManager<ApplicationRole> roleManager, UserManager<ApplicationUser> userManager)
         {
             _roleManager = roleManager;
             _userManager = userManager;

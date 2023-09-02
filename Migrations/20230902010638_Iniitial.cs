@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace AdminPanel.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class Iniitial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,7 +15,7 @@ namespace AdminPanel.Migrations
                 name: "Identity");
 
             migrationBuilder.CreateTable(
-                name: "AspNetRoles",
+                name: "Role",
                 schema: "Identity",
                 columns: table => new
                 {
@@ -27,11 +27,11 @@ namespace AdminPanel.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AspNetRoles", x => x.Id);
+                    table.PrimaryKey("PK_Role", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "AspNetUsers",
+                name: "User",
                 schema: "Identity",
                 columns: table => new
                 {
@@ -39,7 +39,8 @@ namespace AdminPanel.Migrations
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FullName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DOB = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Gender = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ProfilePicture = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
                     UsernameChangeLimit = table.Column<int>(type: "int", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -59,7 +60,7 @@ namespace AdminPanel.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                    table.PrimaryKey("PK_User", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -77,12 +78,77 @@ namespace AdminPanel.Migrations
                 {
                     table.PrimaryKey("PK_RoleClaims", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_RoleClaims_AspNetRoles_RoleId",
+                        name: "FK_RoleClaims_Role_RoleId",
                         column: x => x.RoleId,
                         principalSchema: "Identity",
-                        principalTable: "AspNetRoles",
+                        principalTable: "Role",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ContactInfos",
+                schema: "Identity",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    HomeAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    WorkAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OtherAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ContactInfos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ContactInfos_User_UserId",
+                        column: x => x.UserId,
+                        principalSchema: "Identity",
+                        principalTable: "User",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "LogsInfos",
+                schema: "Identity",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LastLogin = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LogsInfos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_LogsInfos_User_UserId",
+                        column: x => x.UserId,
+                        principalSchema: "Identity",
+                        principalTable: "User",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PersonalizationInfos",
+                schema: "Identity",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    IsAuthorized = table.Column<bool>(type: "bit", nullable: false),
+                    IsOnline = table.Column<bool>(type: "bit", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PersonalizationInfos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PersonalizationInfos_User_UserId",
+                        column: x => x.UserId,
+                        principalSchema: "Identity",
+                        principalTable: "User",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -100,10 +166,10 @@ namespace AdminPanel.Migrations
                 {
                     table.PrimaryKey("PK_UserClaims", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_UserClaims_AspNetUsers_UserId",
+                        name: "FK_UserClaims_User_UserId",
                         column: x => x.UserId,
                         principalSchema: "Identity",
-                        principalTable: "AspNetUsers",
+                        principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -122,10 +188,10 @@ namespace AdminPanel.Migrations
                 {
                     table.PrimaryKey("PK_UserLogins", x => new { x.LoginProvider, x.ProviderKey });
                     table.ForeignKey(
-                        name: "FK_UserLogins_AspNetUsers_UserId",
+                        name: "FK_UserLogins_User_UserId",
                         column: x => x.UserId,
                         principalSchema: "Identity",
-                        principalTable: "AspNetUsers",
+                        principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -142,17 +208,17 @@ namespace AdminPanel.Migrations
                 {
                     table.PrimaryKey("PK_UserRoles", x => new { x.UserId, x.RoleId });
                     table.ForeignKey(
-                        name: "FK_UserRoles_AspNetRoles_RoleId",
+                        name: "FK_UserRoles_Role_RoleId",
                         column: x => x.RoleId,
                         principalSchema: "Identity",
-                        principalTable: "AspNetRoles",
+                        principalTable: "Role",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_UserRoles_AspNetUsers_UserId",
+                        name: "FK_UserRoles_User_UserId",
                         column: x => x.UserId,
                         principalSchema: "Identity",
-                        principalTable: "AspNetUsers",
+                        principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -171,41 +237,59 @@ namespace AdminPanel.Migrations
                 {
                     table.PrimaryKey("PK_UserTokens", x => new { x.UserId, x.LoginProvider, x.Name });
                     table.ForeignKey(
-                        name: "FK_UserTokens_AspNetUsers_UserId",
+                        name: "FK_UserTokens_User_UserId",
                         column: x => x.UserId,
                         principalSchema: "Identity",
-                        principalTable: "AspNetUsers",
+                        principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_ContactInfos_UserId",
+                schema: "Identity",
+                table: "ContactInfos",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LogsInfos_UserId",
+                schema: "Identity",
+                table: "LogsInfos",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PersonalizationInfos_UserId",
+                schema: "Identity",
+                table: "PersonalizationInfos",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "RoleNameIndex",
                 schema: "Identity",
-                table: "AspNetRoles",
+                table: "Role",
                 column: "NormalizedName",
                 unique: true,
                 filter: "[NormalizedName] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
-                name: "EmailIndex",
-                schema: "Identity",
-                table: "AspNetUsers",
-                column: "NormalizedEmail");
-
-            migrationBuilder.CreateIndex(
-                name: "UserNameIndex",
-                schema: "Identity",
-                table: "AspNetUsers",
-                column: "NormalizedUserName",
-                unique: true,
-                filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RoleClaims_RoleId",
                 schema: "Identity",
                 table: "RoleClaims",
                 column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "EmailIndex",
+                schema: "Identity",
+                table: "User",
+                column: "NormalizedEmail");
+
+            migrationBuilder.CreateIndex(
+                name: "UserNameIndex",
+                schema: "Identity",
+                table: "User",
+                column: "NormalizedUserName",
+                unique: true,
+                filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserClaims_UserId",
@@ -230,6 +314,18 @@ namespace AdminPanel.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "ContactInfos",
+                schema: "Identity");
+
+            migrationBuilder.DropTable(
+                name: "LogsInfos",
+                schema: "Identity");
+
+            migrationBuilder.DropTable(
+                name: "PersonalizationInfos",
+                schema: "Identity");
+
+            migrationBuilder.DropTable(
                 name: "RoleClaims",
                 schema: "Identity");
 
@@ -250,11 +346,11 @@ namespace AdminPanel.Migrations
                 schema: "Identity");
 
             migrationBuilder.DropTable(
-                name: "AspNetRoles",
+                name: "Role",
                 schema: "Identity");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers",
+                name: "User",
                 schema: "Identity");
         }
     }

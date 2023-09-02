@@ -33,7 +33,7 @@ namespace AdminPanel.Areas.Admin.Pages.User
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly ILogger<CreateModel> _logger;
         private readonly IEmailSender _emailSender;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly RoleManager<ApplicationRole> _roleManager;
         public readonly ApplicationDbContext _db;
 
         public CreateModel(
@@ -41,7 +41,7 @@ namespace AdminPanel.Areas.Admin.Pages.User
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
             ILogger<CreateModel> logger,
-            IEmailSender emailSender, ApplicationDbContext db, RoleManager<IdentityRole> roleManager)
+            IEmailSender emailSender, ApplicationDbContext db, RoleManager<ApplicationRole> roleManager)
         {
             _userManager = userManager;
             _db = db;
@@ -102,16 +102,11 @@ namespace AdminPanel.Areas.Admin.Pages.User
                     user.UserName = Input.UserName;
 
                     // Add Personal Info
-                    PersonalInfo personalInfo = new()
-                    {
-                        FirstName = Regex.Replace(Input.FirstName, "^[a-z]", c => c.Value.ToUpper()),
-                        LastName = Regex.Replace(Input.LastName, "^[a-z]", c => c.Value.ToUpper()),
-                        FullName = Regex.Replace(Input.FirstName, "^[a-z]", c => c.Value.ToUpper()) + " " + Regex.Replace(Input.LastName, "^[a-z]", c => c.Value.ToUpper()),
-                        DOB = Input.DOB,
-                        Gender = Input.Gender,
-
-                        UserId = user.Id
-                    };
+                    user.FirstName = Regex.Replace(Input.FirstName, "^[a-z]", c => c.Value.ToUpper());
+                    user.LastName = Regex.Replace(Input.LastName, "^[a-z]", c => c.Value.ToUpper());
+                    user.FullName = Regex.Replace(Input.FirstName, "^[a-z]", c => c.Value.ToUpper()) + " " + Regex.Replace(Input.LastName, "^[a-z]", c => c.Value.ToUpper());
+                    user.DOB = Input.DOB;
+                    user.Gender = Input.Gender;
 
                     // Add Profile Picture
                     using (var dataStream = new MemoryStream())
@@ -119,7 +114,7 @@ namespace AdminPanel.Areas.Admin.Pages.User
                         await Input.ProfilePicture.CopyToAsync(dataStream);
                         if (dataStream.Length < 2097152)
                         {
-                            personalInfo.ProfilePicture = dataStream.ToArray();
+                            user.ProfilePicture = dataStream.ToArray();
                             await _userManager.UpdateAsync(user);
                         }
                         else
@@ -127,7 +122,6 @@ namespace AdminPanel.Areas.Admin.Pages.User
                             ModelState.AddModelError("File", "The file is too large");
                         }
                     }
-                    await _db.PersonalInfos.AddAsync(personalInfo);
 
                     // Add Contact Info
                     ContactInfo contactInfo = new()
@@ -135,6 +129,7 @@ namespace AdminPanel.Areas.Admin.Pages.User
                         HomeAddress = Input.HomeAddress,
                         WorkAddress = Input.WorkAddress,
                         OtherAddress = Input.OtherAddress,
+                        ZipCode = Input.ZipCode,
 
                         UserId = user.Id
                     };

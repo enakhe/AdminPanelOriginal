@@ -13,13 +13,17 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
+builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options => options.SignIn.RequireConfirmedAccount = false)
             .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddRoleManager<RoleManager<ApplicationRole>>()
+            .AddSignInManager<SignInManager<ApplicationUser>>()
+            .AddUserManager<UserManager<ApplicationUser>>()
             .AddDefaultUI()
             .AddDefaultTokenProviders();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+
 
 var app = builder.Build();
 using (var scope = app.Services.CreateScope())
@@ -30,7 +34,7 @@ using (var scope = app.Services.CreateScope())
     {
         var context = services.GetRequiredService<ApplicationDbContext>();
         var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
-        var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+        var roleManager = services.GetRequiredService<RoleManager<ApplicationRole>>();
         await ContextSeed.SeedRolesAsync(userManager, roleManager);
         await ContextSeed.SeedSuperAdminAsync(userManager, roleManager);
     }

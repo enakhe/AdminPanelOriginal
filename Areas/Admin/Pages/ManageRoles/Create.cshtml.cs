@@ -1,6 +1,7 @@
 #nullable disable
 
 using AdminPanel.InputModel;
+using AdminPanel.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -11,8 +12,8 @@ namespace AdminPanel.Areas.Admin.Pages.Roles
     [Authorize(Roles = "SuperAdmin")]
     public class CreateModel : PageModel
     {
-        private readonly RoleManager<IdentityRole> _roleManager;
-        public CreateModel(RoleManager<IdentityRole> roleManager)
+        private readonly RoleManager<ApplicationRole> _roleManager;
+        public CreateModel(RoleManager<ApplicationRole> roleManager)
         {
             _roleManager = roleManager;
         }
@@ -32,7 +33,7 @@ namespace AdminPanel.Areas.Admin.Pages.Roles
             {
                 if (roleName != null)
                 {
-                    await _roleManager.CreateAsync(new IdentityRole(roleName.Trim()));
+                    await _roleManager.CreateAsync(new ApplicationRole(roleName.Trim()));
                 }
                 else
                 {

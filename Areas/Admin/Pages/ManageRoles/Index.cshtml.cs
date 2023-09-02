@@ -1,5 +1,6 @@
 #nullable disable
 
+using AdminPanel.Models;
 using AdminPanel.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -12,14 +13,14 @@ namespace AdminPanel.Areas.Admin.Pages.Roles
     [Authorize(Roles = "SuperAdmin")]
     public class IndexModel : PageModel
     {
-        private readonly RoleManager<IdentityRole> _roleManager;
-        public IndexModel(RoleManager<IdentityRole> roleManager)
+        private readonly RoleManager<ApplicationRole> _roleManager;
+        public IndexModel(RoleManager<ApplicationRole> roleManager)
         {
             _roleManager = roleManager;
         }
 
         public string ReturnUrl { get; set; }
-        public IList<IdentityRole> RoleList { get; set; }
+        public IList<ApplicationRole> RoleList { get; set; }
 
         [TempData]
         public string StatusMessage { get; set; }

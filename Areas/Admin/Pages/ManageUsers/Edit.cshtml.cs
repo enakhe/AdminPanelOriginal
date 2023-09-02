@@ -40,18 +40,17 @@ namespace AdminPanel.Areas.Admin.Pages.Users
 
         public ApplicationUser UserData { get; set; }
 
-        public async void LoadAsync(ApplicationUser user)
+        public void LoadAsync(ApplicationUser user)
         {
-            PersonalInfo userPersonalInfo = await _db.PersonalInfos.FirstOrDefaultAsync(userPersonalInfo => userPersonalInfo.UserId == user.Id);
             Input = new RegisterInputModel
             {
-                FirstName = userPersonalInfo.FirstName,
-                LastName = userPersonalInfo.LastName,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
                 Email = user.Email,
                 
             };
 
-            UserProfilePicture = userPersonalInfo.ProfilePicture;
+            UserProfilePicture = user.ProfilePicture;
             UserData = user;
         }
 
@@ -107,6 +106,7 @@ namespace AdminPanel.Areas.Admin.Pages.Users
                     LoadAsync(user);
                     return Page();
                 }
+
 
                 string firstName = user.FirstName;
                 string lastName = user.LastName;

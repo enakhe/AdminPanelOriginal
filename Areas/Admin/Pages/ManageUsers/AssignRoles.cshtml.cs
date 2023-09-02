@@ -18,12 +18,12 @@ namespace AdminPanel.Areas.Admin.Pages.User
     {
         private readonly UserManager<ApplicationUser> _userManager;
         public readonly ApplicationDbContext _db;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly RoleManager<ApplicationRole> _roleManager;
 
         public AssignRoles(
             UserManager<ApplicationUser> userManager,
             ApplicationDbContext db,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<ApplicationRole> roleManager)
         {
             _userManager = userManager;
             _db = db;
@@ -81,19 +81,28 @@ namespace AdminPanel.Areas.Admin.Pages.User
                 { 
                     var roles = await _userManager.GetRolesAsync(user);
                     var result = await _userManager.RemoveFromRolesAsync(user, roles);
+
                     if (!result.Succeeded)
                     {
                         ModelState.AddModelError("", "Cannot remove user existing roles");
                         return Page();
                     }
+
                     result = await _userManager.AddToRolesAsync(user, RoleList.Where(x => x.Selected).Select(y => y.RoleName));
+
                     if (!result.Succeeded)
                     {
                         ModelState.AddModelError("", "Cannot add selected roles to user");
                         return Page();
                     }
-                    StatusMessage = "Successfully assigned role";
-                    return RedirectToPage("/Users/Index", new { area = "Admin", statusMessage = StatusMessage });
+
+                    if (result.Succeeded)
+                    {
+                        await _userManager.UpdateAsync(user);
+                        _db.SaveChanges();
+                        StatusMessage = "Successfully assigned role";
+                        return RedirectToPage("/Users/Index", new { area = "Admin", statusMessage = StatusMessage });
+                    }
                 }
             }
             return Page();

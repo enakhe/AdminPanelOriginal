@@ -52,6 +52,7 @@
                                 <thead>
                                     <tr>
                                         <th>Name</th>
+                                        <th>No of users</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -66,6 +67,9 @@
                                                         <a asp-action="" asp-controller="User">
                                                             @role.Name
                                                         </a>
+                                                    </td>
+                                                    <td>
+                                                        @role.NoOfUser
                                                     </td>
                                                     <td class="dropdown">
                                                         <a class="text-dark p" href="#" data-toggle="dropdown" aria-expanded="false">
@@ -94,6 +98,7 @@
                                 <tfoot>
                                     <tr>
                                         <th>Name</th>
+                                        <th>No of users</th>
                                         <th>Action</th>
                                     </tr>
                                 </tfoot>

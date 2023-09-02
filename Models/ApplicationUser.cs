@@ -13,8 +13,6 @@ namespace AdminPanel.Models
             this.Contact = new HashSet<ContactInfo>();
             this.Personalization = new HashSet<PersonalizationInfo>();
             this.Logs = new HashSet<LogsInfo>();
-
-
         }
 
         //Basic Infromation

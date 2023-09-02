@@ -63,26 +63,30 @@ namespace AdminPanel.Areas.Admin.Pages.User
 
         public IList<ManageUserRolesViewModel> RoleList { get; set; }
 
+        public void LoadAsync()
+        {
+            var model = new List<ManageUserRolesViewModel>();
+            foreach (var role in _roleManager.Roles)
+            {
+                if (!role.Name.Contains("SuperAdmin"))
+                {
+                    var userRolesViewModel = new ManageUserRolesViewModel
+                    {
+                        RoleId = role.Id,
+                        RoleName = role.Name
+                    };
+                    model.Add(userRolesViewModel);
+                }
+            }
+            RoleList = model;
+        }
 
         public void OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
             if (ModelState.IsValid)
             {
-                var model = new List<ManageUserRolesViewModel>();
-                foreach (var role in _roleManager.Roles)
-                {
-                    if (!role.Name.Contains("SuperAdmin"))
-                    {
-                        var userRolesViewModel = new ManageUserRolesViewModel
-                        {
-                            RoleId = role.Id,
-                            RoleName = role.Name
-                        };
-                        model.Add(userRolesViewModel);
-                    }
-                }
-                RoleList = model;
+                LoadAsync();
             }
         }
 
@@ -91,7 +95,11 @@ namespace AdminPanel.Areas.Admin.Pages.User
             returnUrl ??= Url.Page("/ManageUsers/Index");
             if (ModelState.IsValid)
             {
+                LoadAsync();
+
                 var user = new ApplicationUser();
+                user.Id = Guid.NewGuid().ToString();
+                user.UserName = Input.UserName;
 
                 await _userStore.SetUserNameAsync(user, user.UserName, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
@@ -164,6 +172,7 @@ namespace AdminPanel.Areas.Admin.Pages.User
                     {
                         await _userManager.UpdateAsync(user);
                         _db.SaveChanges();
+                        return RedirectToPage("/ManageUsers/Index", new { area = "Admin" });
                     }
                 }
                 foreach (var error in result.Errors)

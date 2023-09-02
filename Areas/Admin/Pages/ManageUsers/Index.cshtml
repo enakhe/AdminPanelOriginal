@@ -63,22 +63,20 @@
                                                         @{
                                                             if (user.ProfilePicture != null)
                                                             {
-                                                                <a asp-action="" asp-controller="User">
+                                                                <a asp-area="Admin" asp-page="/ManageUsers/Profile" asp-route-id="@user.Id">
                                                                     <img class="user-image" src="data:image/*;base64,@(Convert.ToBase64String(user.ProfilePicture))"> @user.FullName
                                                                 </a>
                                                             }
                                                             else
                                                             {
-                                                                <a asp-action="" asp-controller="User">
+                                                                <a asp-area="Admin" asp-page="/ManageUsers/Profile" asp-route-id="@user.Id">
                                                                     <img class="user-image" class="rounded-circle" object-fit:cover" src="~/img/user.png"> @user.FullName
                                                                 </a>
                                                             }
                                                         }
                                                     </td>
                                                     <td>
-                                                        <a asp-action="" asp-controller="User">
-                                                            @user.Username
-                                                        </a>
+                                                        @user.Username
                                                     </td>
                                                     <td>@user.Email</td>
                                                     <td>

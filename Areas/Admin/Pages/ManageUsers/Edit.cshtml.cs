@@ -47,7 +47,6 @@ namespace AdminPanel.Areas.Admin.Pages.Users
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Email = user.Email,
-                
             };
 
             UserProfilePicture = user.ProfilePicture;
@@ -95,7 +94,10 @@ namespace AdminPanel.Areas.Admin.Pages.Users
         {
             if (ModelState.IsValid)
             {
+
                 ApplicationUser user = await _userManager.FindByIdAsync(id);
+                LoadAsync(user);
+
                 if (user == null)
                 {
                     return NotFound($"Unable to load user with ID '{user.Id}'.");

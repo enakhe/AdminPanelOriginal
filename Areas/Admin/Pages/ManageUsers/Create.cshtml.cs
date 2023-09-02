@@ -1,26 +1,14 @@
 #nullable disable
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Text.Encodings.Web;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication;
+using AdminPanel.Data;
+using AdminPanel.Models;
+using AdminPanel.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using AdminPanel.Models;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Logging;
 using System.Text.RegularExpressions;
-using AdminPanel.Data;
-using AdminPanel.ViewModels;
-using Microsoft.EntityFrameworkCore;
 
 namespace AdminPanel.Areas.Admin.Pages.User
 {
@@ -172,7 +160,8 @@ namespace AdminPanel.Areas.Admin.Pages.User
                     {
                         await _userManager.UpdateAsync(user);
                         _db.SaveChanges();
-                        return RedirectToPage("/ManageUsers/Index", new { area = "Admin" });
+                        StatusMessage = "Successfully created user profile";
+                        return RedirectToPage("/ManageUsers/Index", new { area = "Admin", statusMessage = StatusMessage });
                     }
                 }
                 foreach (var error in result.Errors)

@@ -1,5 +1,6 @@
 #nullable disable
 
+using AdminPanel.Enum;
 using AdminPanel.InputModel;
 using AdminPanel.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -33,16 +34,21 @@ namespace AdminPanel.Areas.Admin.Pages.Roles
             {
                 if (roleName != null)
                 {
-                    await _roleManager.CreateAsync(new ApplicationRole(roleName.Trim()));
+                    ApplicationRole defaultRole = new()
+                    {
+                        Name = roleName.Trim()
+                    };
+                    defaultRole.Id = Guid.NewGuid().ToString();
+                    await _roleManager.CreateAsync(defaultRole);
                 }
                 else
                 {
                     StatusMessage = "Error, input required field";
-                    return RedirectToPage("/Roles/Index", new { area = "Admin", statusMessage = StatusMessage });
+                    return RedirectToPage("/ManageRoles/Index", new { area = "Admin", statusMessage = StatusMessage });
                 }
             }
             StatusMessage = "Successfully added role";
-            return RedirectToPage("/Roles/Index", new { area = "Admin", statusMessage = StatusMessage });
+            return RedirectToPage("/ManageRoles/Index", new { area = "Admin", statusMessage = StatusMessage });
         }
     }
 }

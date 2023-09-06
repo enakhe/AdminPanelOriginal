@@ -38,7 +38,7 @@ namespace AdminPanel
 
         [Required]
         [PersonalData]
-        [Display(Name = "Date of Birth")]
+        [Display(Name = "Gender")]
         public string Gender { get; set; }
 
         [PersonalData]
@@ -48,15 +48,15 @@ namespace AdminPanel
         [Required]
         [PersonalData]
         [Display(Name = "Profile Picture")]
-        public string HomeAddress { get; set; }
+        public string Street { get; set; }
 
         [PersonalData]
         [Display(Name = "Work Address")]
-        public string WorkAddress { get; set; }
+        public string City { get; set; }
 
         [PersonalData]
         [Display(Name = "OtherAddress")]
-        public string OtherAddress { get; set; }
+        public string State { get; set; }
 
         [PersonalData]
         [Display(Name = "ZipCode")]

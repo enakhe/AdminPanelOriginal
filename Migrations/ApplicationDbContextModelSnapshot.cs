@@ -147,17 +147,17 @@ namespace AdminPanel.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("HomeAddress")
+                    b.Property<string>("City")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("OtherAddress")
+                    b.Property<string>("State")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Street")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("WorkAddress")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ZipCode")
                         .HasColumnType("nvarchar(max)");

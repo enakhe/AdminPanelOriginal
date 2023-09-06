@@ -103,28 +103,33 @@ namespace AdminPanel.Areas.Admin.Pages.User
                     user.FullName = Regex.Replace(Input.FirstName, "^[a-z]", c => c.Value.ToUpper()) + " " + Regex.Replace(Input.LastName, "^[a-z]", c => c.Value.ToUpper());
                     user.DOB = Input.DOB;
                     user.Gender = Input.Gender;
+                    user.PhoneNumber = Input.PhoneNumber;
 
                     // Add Profile Picture
-                    using (var dataStream = new MemoryStream())
+                    if (Input.ProfilePicture != null)
                     {
-                        await Input.ProfilePicture.CopyToAsync(dataStream);
-                        if (dataStream.Length < 2097152)
+                        using (var dataStream = new MemoryStream())
                         {
-                            user.ProfilePicture = dataStream.ToArray();
-                            await _userManager.UpdateAsync(user);
-                        }
-                        else
-                        {
-                            ModelState.AddModelError("File", "The file is too large");
+                            await Input.ProfilePicture.CopyToAsync(dataStream);
+                            if (dataStream.Length < 2097152)
+                            {
+                                user.ProfilePicture = dataStream.ToArray();
+                                await _userManager.UpdateAsync(user);
+                            }
+                            else
+                            {
+                                ModelState.AddModelError("File", "The file is too large");
+                            }
                         }
                     }
+                    
 
                     // Add Contact Info
                     ContactInfo contactInfo = new()
                     {
-                        HomeAddress = Input.HomeAddress,
-                        WorkAddress = Input.WorkAddress,
-                        OtherAddress = Input.OtherAddress,
+                        Street = Input.Street,
+                        City = Input.City,
+                        State = Input.State,
                         ZipCode = Input.ZipCode,
 
                         UserId = user.Id

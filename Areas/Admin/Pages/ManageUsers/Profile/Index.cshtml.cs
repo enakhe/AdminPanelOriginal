@@ -7,27 +7,22 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-
-namespace AdminPanel.Areas.Admin.Pages.ManageUsers
+namespace AdminPanel.Areas.Admin.Pages.ManageUsers.Profile
 {
     [Authorize(Roles = "SuperAdmin")]
-    public class ProfileModel : PageModel
+    public class IndexModel : PageModel
     {
-
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly ApplicationDbContext _db;
 
-        public ProfileModel(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager, ApplicationDbContext db)
+        public IndexModel(ApplicationDbContext db, UserManager<ApplicationUser> userManager)
         {
-            _userManager = userManager;
-            _roleManager = roleManager;
             _db = db;
+            _userManager = userManager;
         }
 
         [TempData]
         public string StatusMessage { get; set; }
-
         public ApplicationUser UserData { get; set; }
         public byte[] UserProfilePicture { get; set; }
 
@@ -41,8 +36,7 @@ namespace AdminPanel.Areas.Admin.Pages.ManageUsers
                 UserProfilePicture = user.ProfilePicture;
             }
         }
-
-        public async void OnGet(string id, string returnUrl)
+        public async Task OnGet(string id, string returnUrl)
         {
             returnUrl = ReturnUrl;
             if (ModelState.IsValid)

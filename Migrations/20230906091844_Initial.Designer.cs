@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AdminPanel.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230902010638_Iniitial")]
-    partial class Iniitial
+    [Migration("20230906091844_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -41,6 +41,9 @@ namespace AdminPanel.Migrations
                     b.Property<string>("Name")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
+
+                    b.Property<int>("NoOfUser")
+                        .HasColumnType("int");
 
                     b.Property<string>("NormalizedName")
                         .HasMaxLength(256)
@@ -147,16 +150,19 @@ namespace AdminPanel.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("HomeAddress")
+                    b.Property<string>("City")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("OtherAddress")
+                    b.Property<string>("State")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Street")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("WorkAddress")
+                    b.Property<string>("ZipCode")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");

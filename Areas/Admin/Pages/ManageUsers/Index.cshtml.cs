@@ -51,7 +51,10 @@ namespace AdminPanel.Areas.Admin.Pages.User
                     thisViewModel.Email = user.Email;
                     thisViewModel.FullName = user.FullName;
                     thisViewModel.ProfilePicture = user.ProfilePicture;
-                    thisViewModel.DateCreated = logsInfo.DateCreated;
+                    if (logsInfo != null)
+                    {
+                        thisViewModel.DateCreated = logsInfo.DateCreated;
+                    }
                     thisViewModel.Roles = await GetUserRoles(user);
                     userRolesViewModel.Add(thisViewModel);
                 }

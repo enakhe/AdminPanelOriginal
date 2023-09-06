@@ -6,8 +6,6 @@ using AdminPanel.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
 
 namespace AdminPanel.Areas.Admin.Pages.Users
@@ -134,7 +132,7 @@ namespace AdminPanel.Areas.Admin.Pages.Users
                     IdentityResult setEmail = await _userManager.SetEmailAsync(user, Input.Email);
                     if (!setEmail.Succeeded)
                     {
-                        StatusMessage = "Unexpected error when trying to set phone number.";
+                        StatusMessage = "Unexpected error when trying to set email address.";
                         return RedirectToPage();
                     }
                 }

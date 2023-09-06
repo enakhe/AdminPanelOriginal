@@ -1,0 +1,169 @@
+﻿@page
+@model AdminPanel.Areas.Admin.Pages.ManageUsers.Profile.IndexModel
+@{
+    Layout = "_Dashboard";
+    ViewData["Title"] = "User Profile";
+}
+
+<div class="content-wrapper">
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>User Profile</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active">Profile / @Model.UserData.FullName</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="content">
+        <div class="container-fluid">
+            <div class="profile-heading">
+                <div class="d-flex justify-content-center">
+                    <div class="my-2">
+                        <div class="d-flex justify-content-center">
+                            <div class="my-2">
+                                @{
+                                    if (Model.UserProfilePicture != null)
+                                    {
+                                        <img id="profilePicture"
+                                             class="rounded-circle"
+                                             src="data:image/*;base64,@(Convert.ToBase64String(Model.UserProfilePicture))" />
+                                    }
+                                    else
+                                    {
+                                        <img id="profilePicture" class="rounded-circle" src="~/img/user.png">
+                                    }
+                                }
+                            </div>
+
+                        </div>
+                        <h4 class="my-1 text-center">User, @Model.UserData.FullName</h4>
+                        <p class="text-center">Manage user info, privacy, and security</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-body">
+                <div class="row">
+                    <div class="col-sm-6 mb-3 mb-sm-0">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-sm-6 my-1">
+                                        <h4 class="card-title fw-semibold my-1">Personal Info</h4>
+                                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                                    </div>
+                                    <div class="col-sm-6 my-1">
+                                        <img src="~/img/personal-info.svg" class="profile-img img-fluid w-100 float-end" alt="...">
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <a asp-area="Admin" asp-page="/ManageUsers/Profile/PersonalInfo" asp-route-id="@Model.UserData.Id" class="btn btn-success">Manage</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 mb-3 mb-sm-0">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-sm-6 my-1">
+                                        <h4 class="card-title fw-semibold my-1">Roles & Permissions</h4>
+                                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                                    </div>
+                                    <div class="col-sm-6 my-1">
+                                        <img src="~/img/roles.svg" class="profile-img img-fluid w-100 float-end" alt="...">
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <a href="#" class="btn btn-success">Manage</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 mb-3 mb-sm-0">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-sm-6 my-1">
+                                        <h4 class="card-title fw-semibold my-1">Privacy & Personalization</h4>
+                                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                                    </div>
+                                    <div class="col-sm-6 my-1">
+                                        <img src="~/img/privacy.svg" class="profile-img img-fluid w-100 float-end" alt="...">
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <a href="#" class="btn btn-success">Manage</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 mb-3 mb-sm-0">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-sm-6 my-1">
+                                        <h4 class="card-title fw-semibold my-1">Audit trial & Logging</h4>
+                                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                                    </div>
+                                    <div class="col-sm-6 my-1">
+                                        <img src="~/img/audit.svg" class="profile-img img-fluid w-100 float-end" alt="...">
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <a href="#" class="btn btn-success">Manage</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 mb-3 mb-sm-0">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-sm-6 my-1">
+                                        <h4 class="card-title fw-semibold my-1">Access request & Approval</h4>
+                                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                                    </div>
+                                    <div class="col-sm-6 my-1">
+                                        <img src="~/img/access.svg" class="profile-img img-fluid w-100 float-end" alt="...">
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <a href="#" class="btn btn-success">Manage</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 mb-3 mb-sm-0">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-sm-6 my-1">
+                                        <h4 class="card-title fw-semibold my-1">Password & Security</h4>
+                                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                                    </div>
+                                    <div class="col-sm-6 my-1">
+                                        <img src="~/img/security.svg" class="profile-img img-fluid w-100 float-end" alt="...">
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <a href="#" class="btn btn-success">Manage</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

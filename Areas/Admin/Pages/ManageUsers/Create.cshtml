@@ -111,7 +111,7 @@
                                                         <option value="Male">Male</option>
                                                         <option value="Female">Female</option>
                                                     </select>
-                                                    <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+                                                    <span asp-validation-for="Input.Gender" class="text-danger"></span>
                                                 </div>
                                             </div>
                                         </div>
@@ -121,21 +121,21 @@
                                     <div class="col-md-6 my-2">
                                         <h5>Contact Information</h5>
                                         <div class="form-floating mb-3">
-                                            <input asp-for="Input.HomeAddress" class="form-control shadow-none" aria-required="true" placeholder="Home address" />
-                                            <label asp-for="Input.HomeAddress" class="form-label">Home address</label>
-                                            <span asp-validation-for="Input.HomeAddress" class="text-danger"></span>
+                                            <input asp-for="Input.Street" class="form-control shadow-none" aria-required="true" placeholder="Home address" />
+                                            <label asp-for="Input.Street" class="form-label">Street address</label>
+                                            <span asp-validation-for="Input.Street" class="text-danger"></span>
                                         </div>
 
                                         <div class="form-floating mb-3">
-                                            <input asp-for="Input.WorkAddress" class="form-control shadow-none" aria-required="true" placeholder="Work address" />
-                                            <label asp-for="Input.WorkAddress" class="form-label">Work address</label>
-                                            <span asp-validation-for="Input.WorkAddress" class="text-danger"></span>
+                                            <input asp-for="Input.City" class="form-control shadow-none" aria-required="true" placeholder="Work address" />
+                                            <label asp-for="Input.City" class="form-label">City address</label>
+                                            <span asp-validation-for="Input.City" class="text-danger"></span>
                                         </div>
 
                                         <div class="form-floating mb-3">
-                                            <input asp-for="Input.OtherAddress" class="form-control shadow-none" aria-required="true" placeholder="Other address" />
-                                            <label asp-for="Input.OtherAddress" class="form-label">Other address</label>
-                                            <span asp-validation-for="Input.OtherAddress" class="text-danger"></span>
+                                            <input asp-for="Input.State" class="form-control shadow-none" aria-required="true" placeholder="Other address" />
+                                            <label asp-for="Input.State" class="form-label">State address</label>
+                                            <span asp-validation-for="Input.State" class="text-danger"></span>
                                         </div>
 
                                         <div class="form-floating mb-3">

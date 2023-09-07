@@ -2,11 +2,11 @@
 
 using AdminPanel.Data;
 using AdminPanel.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.RegularExpressions;
 
-namespace AdminPanel.Areas.Admin.Controllers
+namespace AdminPanel.Controllers
 {
     [Route("[controller]")]
     [ApiController]
@@ -28,18 +28,31 @@ namespace AdminPanel.Areas.Admin.Controllers
         {
             if (username != null)
             {
-                if (username.Length < 6)
+                var regexItem = new Regex("^[`!@#$%&.^()-+=/><_,|*]*$");
+
+                if (username.Length < 7 || username == null || username == "")
                 {
-                    return new JsonResult("Error, username is to short");
+                    return new JsonResult($"Error, '{username}' is to short");
                 }
+
+                foreach (char c in username)
+                {
+                    if (regexItem.IsMatch(c.ToString()))
+                    {
+                        return new JsonResult($"Error, username '{username}' is invalid, can only contain letters or digits.");
+                    }
+                }
+
                 var user = await _userManager.FindByNameAsync(username);
+
                 if (user != null)
                 {
-                    return new JsonResult("Error, a user with that username already exits");
+                    return new JsonResult($"Error, a user with '{username}' already exits");
                 }
-                return new JsonResult("Username is valid");
+
+                return new JsonResult($"'{username}' is valid");
             }
-            return new JsonResult("");
+            return new JsonResult($"Error, '{username}' is not valid");
         }
     }
 }

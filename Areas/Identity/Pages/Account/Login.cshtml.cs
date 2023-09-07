@@ -1,6 +1,4 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-#nullable disable
+﻿#nullable disable
 
 using System;
 using System.Collections.Generic;
@@ -17,6 +15,8 @@ using Microsoft.Extensions.Logging;
 using System.Net.Mail;
 using AdminPanel.Models;
 using AdminPanel.InputModel;
+using AdminPanel.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace AdminPanel.Areas.Identity.Pages.Account
 {
@@ -24,14 +24,19 @@ namespace AdminPanel.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ApplicationDbContext _db;
         private readonly ILogger<LoginModel> _logger;
 
-        public LoginModel(SignInManager<ApplicationUser> signInManager, ILogger<LoginModel> logger, UserManager<ApplicationUser> userManager)
+        public LoginModel(SignInManager<ApplicationUser> signInManager, ILogger<LoginModel> logger, UserManager<ApplicationUser> userManager, ApplicationDbContext db)
         {
             _signInManager = signInManager;
             _logger = logger;
+            _db = db;
             _userManager = userManager;
         }
+
+        [TempData]
+        public string StatusMessage { get; set; }   
 
         [BindProperty]
         public LoginInputModel Input { get; set; }
@@ -78,23 +83,34 @@ namespace AdminPanel.Areas.Identity.Pages.Account
                 {
                     var currentUser = await _userManager.FindByNameAsync(Input.Username);
                     var roles = await _userManager.GetRolesAsync(currentUser);
+                    PersonalizationInfo personalizationInfo = await _db.PersonalizationInfos.FirstOrDefaultAsync(personalizationInfo => personalizationInfo.UserId == user.Id);
+
                     if (roles.Contains("SuperAdmin"))
                     {
                         return RedirectToPage("/Dashboard/Index", new { area = "Admin" });
                     }
-                    else if (roles.Contains("Regular"))
-                    {
-                        return RedirectToPage("/Dashboard/Index", new { area = "User" });
-                    }
                     else
                     {
-                        ModelState.AddModelError(string.Empty, "Do not have access to login");
-                        return Page();
+                        if (personalizationInfo != null)
+                        {
+                            if (personalizationInfo.IsAuthorized == false)
+                            {
+                                StatusMessage = "Error, you are not authorized to have access";
+                                await _signInManager.SignOutAsync();
+                                return Page();
+                            }
+                            else
+                            {
+                                return RedirectToPage("/Dashboard/Index", new { area = "User" });
+                            }
+                        }
+                        else
+                        {
+                            StatusMessage = "Error, you are not authorized to have access";
+                            await _signInManager.SignOutAsync();
+                            return Page();
+                        }
                     }
-                }
-                if (result.RequiresTwoFactor)
-                {
-                    return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
                 }
                 if (result.IsLockedOut)
                 {
@@ -103,26 +119,11 @@ namespace AdminPanel.Areas.Identity.Pages.Account
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt");
+                    StatusMessage = "Error, Invalid login attempt";
                     return Page();
                 }
             }
-
-            // If we got this far, something failed, redisplay form
             return Page();
-        }
-
-        public bool IsValidEmail(string emailaddress)
-        {
-            try
-            {
-                MailAddress m = new MailAddress(emailaddress);
-                return true;
-            }
-            catch (FormatException)
-            {
-                return false;
-            }
         }
     }
 }

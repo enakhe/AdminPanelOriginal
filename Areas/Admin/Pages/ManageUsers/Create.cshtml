@@ -51,12 +51,15 @@
                                     </div>
                                 </div>
 
-                                <div class="row">
+                                <div class="row align-items-center">
                                     <div class="col-md-6 my-2">
                                         <h5>Personal Information</h5>
                                         <div class="form-floating mb-3">
                                             <input asp-for="Input.UserName" class="form-control shadow-none" aria-required="true" placeholder="Username" />
                                             <label asp-for="Input.UserName" class="form-label">Username</label>
+                                            <p class="my-1">
+                                                <i id="usernameIcon"></i><span id="usernameOutput"></span>
+                                            </p>
                                             <span asp-validation-for="Input.UserName" class="text-danger"></span>
                                         </div>
 
@@ -155,8 +158,8 @@
                                                 <div class="form-check">
                                                     <input type="hidden" asp-for="@Model.RoleList[i].RoleId" />
                                                     <input type="hidden" asp-for="@Model.RoleList[i].RoleName" />
-                                                    <input asp-for="@Model.RoleList[i].Selected" class="form-check-input" />
-                                                    <label class="form-check-label" asp-for="@Model.RoleList[i].Selected">
+                                                    <input asp-for="@Model.RoleList[i].Selected" class="form-check-input shadow-none" />
+                                                    <label class="form-check-label shadow-none" asp-for="@Model.RoleList[i].Selected">
                                                         @Model.RoleList[i].RoleName
                                                     </label>
                                                 </div>
@@ -169,7 +172,7 @@
                                             <h5>Personlization</h5>
                                             <div class="form-check form-switch">
                                                 <input class="form-check-input shadow-none" aria-required="true" asp-for="Input.IsAuthorized" type="checkbox" role="switch" checked>
-                                                <label class="form-check-label" asp-for="Input.IsAuthorized">Authorize</label>
+                                                <label class="form-check-label mx-3" asp-for="Input.IsAuthorized">Authorize</label>
                                             </div>
                                         </div>
                                     </div>
@@ -177,7 +180,7 @@
                                 
                                 
                                 
-                                <button type="submit" class="w-100 btn btn-lg btn-success">Save</button>
+                                <button type="submit" class="w-100 btn btn-lg btn-success shadow-none">Save</button>
                             </form>
                         </div>
                     </div>

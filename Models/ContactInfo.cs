@@ -6,7 +6,7 @@ namespace AdminPanel.Models
     {
         //Contact Infromation
         public string Id { get; set; } = Guid.NewGuid().ToString();
-        public string Street{ get; set; }
+        public string Street { get; set; }
         public string City { get; set; }
         public string State { get; set; }
         public string ZipCode { get; set; }

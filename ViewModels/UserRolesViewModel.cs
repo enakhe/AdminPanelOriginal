@@ -1,6 +1,5 @@
 ﻿#nullable disable
 
-using Microsoft.CodeAnalysis.Elfie.Model.Strings;
 
 namespace AdminPanel.ViewModels
 {

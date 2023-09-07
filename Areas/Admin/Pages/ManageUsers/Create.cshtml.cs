@@ -122,7 +122,7 @@ namespace AdminPanel.Areas.Admin.Pages.User
                             }
                         }
                     }
-                    
+
 
                     // Add Contact Info
                     ContactInfo contactInfo = new()

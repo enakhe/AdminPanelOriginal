@@ -1,7 +1,5 @@
 #nullable disable
 
-using AdminPanel.Enum;
-using AdminPanel.InputModel;
 using AdminPanel.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -30,7 +28,7 @@ namespace AdminPanel.Areas.Admin.Pages.Roles
 
         public async Task<IActionResult> OnPostAsync(string roleName, string returnUrl = null)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 if (roleName != null)
                 {

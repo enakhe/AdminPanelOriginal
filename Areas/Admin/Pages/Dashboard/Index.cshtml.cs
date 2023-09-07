@@ -1,9 +1,7 @@
 #nullable disable
 
-using AdminPanel.Data;
 using AdminPanel.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace AdminPanel.Areas.Admin.Pages.Dashboard

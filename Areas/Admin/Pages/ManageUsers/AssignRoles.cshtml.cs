@@ -7,9 +7,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace AdminPanel.Areas.Admin.Pages.User
 {
@@ -65,7 +62,7 @@ namespace AdminPanel.Areas.Admin.Pages.User
                             }
                             model.Add(userRolesViewModel);
                         }
-                        
+
                     }
                     RoleList = model;
                 }
@@ -78,7 +75,7 @@ namespace AdminPanel.Areas.Admin.Pages.User
             {
                 var user = await _userManager.FindByIdAsync(id);
                 if (user != null)
-                { 
+                {
                     var roles = await _userManager.GetRolesAsync(user);
                     var result = await _userManager.RemoveFromRolesAsync(user, roles);
 

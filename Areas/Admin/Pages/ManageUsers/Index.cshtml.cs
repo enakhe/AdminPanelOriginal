@@ -37,7 +37,7 @@ namespace AdminPanel.Areas.Admin.Pages.User
             if (ModelState.IsValid)
             {
                 var users = await _userManager.Users.Where(user => !user.UserName.Contains("SuperAdmin")).ToListAsync();
-                
+
                 var userRolesViewModel = new List<UserRolesViewModel>();
 
 

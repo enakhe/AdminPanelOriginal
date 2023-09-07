@@ -2,13 +2,11 @@
 
 using AdminPanel.Data;
 using AdminPanel.Models;
-using AdminPanel.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using NuGet.Packaging.Signing;
 
 namespace AdminPanel.Areas.Admin.Pages.Roles
 {
@@ -52,7 +50,7 @@ namespace AdminPanel.Areas.Admin.Pages.Roles
                             thisRole.NoOfUser = NoOfUser;
                             await _roleManager.UpdateAsync(thisRole);
                         }
-                    } 
+                    }
                 }
             }
         }

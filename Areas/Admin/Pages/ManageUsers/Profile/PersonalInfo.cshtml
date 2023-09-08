@@ -15,7 +15,8 @@
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active">Personal Info / @Model.UserData.FullName</li>
+                        <li class="breadcrumb-item"><a asp-area="Admin" asp-page="/ManageUsers/Profile/Index" asp-route-id="@Model.UserData.Id">Profile</a></li>
+                        <li class="breadcrumb-item active">@Model.UserData.FullName</li>
                     </ol>
                 </div>
             </div>
@@ -69,8 +70,8 @@
                                     </div>
                                 </div>
 
-                                <div class="col-sm-6 mb-3 mb-sm-0">
-                                    <img src="~/img/personal-info.svg" class="img-fluid w-75 float-end" alt="...">
+                                <div class="col-sm-6 d-flex justify-content-center mb-3 mb-sm-0">
+                                    <img src="~/img/personal-info.svg" class="img-fluid w-50" alt="...">
                                 </div>
                             </div>
 
@@ -194,92 +195,41 @@
                                 </div>
                             </div>
 
-                            <div class="contact-info my-3">
+                            <div class="contact-info my-3 w-75">
                                 <div class="border rounded border-3 p-3">
                                     <h5 class="fw-bold">Contact Information </h5>
                                     <div class="accordion accordion-flush" id="accordionFlushExample">
 
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="accordion-item p-2">
-                                                    <h6 class="fw-semibold">Email:</h6>
-                                                    <h2 class="accordion-header">
-                                                        <button class="accordion-button collapsed shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour">
-                                                            <span>@Model.UserData.Email</span>
-                                                        </button>
-                                                    </h2>
-                                                    <div id="flush-collapseFour" class="accordion-collapse collapse p-2" data-bs-parent="#accordionFlushExample">
-                                                        <div class="accordion-body">
-                                                            <div class="form-floating mb-3">
-                                                                <input asp-for="Input.Email" class="form-control shadow-none" autocomplete="email" aria-required="true" placeholder="First name" />
-                                                                <label asp-for="Input.Email" class="form-label">Email</label>
-                                                                <span asp-validation-for="Input.Email" class="text-danger"></span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="accordion-item p-2">
-                                                    <h6 class="fw-semibold">Phone number</h6>
-                                                    <h2 class="accordion-header">
-                                                        <button class="accordion-button collapsed shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseFive" aria-expanded="false" aria-controls="flush-collapseFive">
-                                                            <span>@Model.UserData.PhoneNumber</span>
-                                                        </button>
-                                                    </h2>
-                                                    <div id="flush-collapseFive" class="accordion-collapse collapse p-2" data-bs-parent="#accordionFlushExample">
-                                                        <div class="accordion-body">
-                                                            <div class="form-floating mb-3">
-                                                                <input asp-for="Input.PhoneNumber" class="form-control shadow-none" aria-required="true" placeholder="Phone number" />
-                                                                <label asp-for="Input.PhoneNumber" class="form-label">Phone number</label>
-                                                                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
-                                                            </div>
-                                                        </div>
+                                        <div class="accordion-item p-2">
+                                            <h6 class="fw-semibold">Email:</h6>
+                                            <h2 class="accordion-header">
+                                                <button class="accordion-button collapsed shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour">
+                                                    <span>@Model.UserData.Email</span>
+                                                </button>
+                                            </h2>
+                                            <div id="flush-collapseFour" class="accordion-collapse collapse p-2" data-bs-parent="#accordionFlushExample">
+                                                <div class="accordion-body">
+                                                    <div class="form-floating mb-3">
+                                                        <input asp-for="Input.Email" class="form-control shadow-none" autocomplete="email" aria-required="true" placeholder="First name" />
+                                                        <label asp-for="Input.Email" class="form-label">Email</label>
+                                                        <span asp-validation-for="Input.Email" class="text-danger"></span>
                                                     </div>
                                                 </div>
                                             </div>
-
-                                            <div class="col-md-6">
-                                                <div class="accordion-item p-2">
-                                                    <h6 class="fw-semibold">Backup email:</h6>
-                                                    <h2 class="accordion-header">
-                                                        <button class="accordion-button collapsed shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseBackup" aria-expanded="false" aria-controls="flush-collapseBackup">
-                                                            @{
-                                                                if (@Model.BackUpInfo != null)
-                                                                {
-                                                                    <span>@Model.BackUpInfo.BackupEmail</span>
-                                                                }
-                                                            }
-                                                        </button>
-                                                    </h2>
-                                                    <div id="flush-collapseBackup" class="accordion-collapse collapse p-2" data-bs-parent="#accordionFlushExample">
-                                                        <div class="accordion-body">
-                                                            <div class="form-floating mb-3">
-                                                                <input asp-for="Input.BackupEmail" class="form-control shadow-none" autocomplete="email" aria-required="true" placeholder="First name" />
-                                                                <label asp-for="Input.BackupEmail" class="form-label">Email</label>
-                                                                <span asp-validation-for="Input.BackupEmail" class="text-danger"></span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="accordion-item p-2">
-                                                    <h6 class="fw-semibold">Backup phone number</h6>
-                                                    <h2 class="accordion-header">
-                                                        <button class="accordion-button collapsed shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseBackup2" aria-expanded="false" aria-controls="flush-collapseBackup2">
-                                                            @{
-                                                                if (@Model.BackUpInfo != null)
-                                                                {
-                                                                    <span>@Model.BackUpInfo.BackupPhoneNumber</span>
-                                                                }
-                                                            }
-                                                        </button>
-                                                    </h2>
-                                                    <div id="flush-collapseBackup2" class="accordion-collapse collapse p-2" data-bs-parent="#accordionFlushExample">
-                                                        <div class="accordion-body">
-                                                            <div class="form-floating mb-3">
-                                                                <input asp-for="Input.BackupPhoneNumber" class="form-control shadow-none" aria-required="true" placeholder="Phone number" />
-                                                                <label asp-for="Input.BackupPhoneNumber" class="form-label">Phone number</label>
-                                                                <span asp-validation-for="Input.BackupPhoneNumber" class="text-danger"></span>
-                                                            </div>
-                                                        </div>
+                                        </div>
+                                        <div class="accordion-item p-2">
+                                            <h6 class="fw-semibold">Phone number</h6>
+                                            <h2 class="accordion-header">
+                                                <button class="accordion-button collapsed shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseFive" aria-expanded="false" aria-controls="flush-collapseFive">
+                                                    <span>@Model.UserData.PhoneNumber</span>
+                                                </button>
+                                            </h2>
+                                            <div id="flush-collapseFive" class="accordion-collapse collapse p-2" data-bs-parent="#accordionFlushExample">
+                                                <div class="accordion-body">
+                                                    <div class="form-floating mb-3">
+                                                        <input asp-for="Input.PhoneNumber" class="form-control shadow-none" aria-required="true" placeholder="Phone number" />
+                                                        <label asp-for="Input.PhoneNumber" class="form-label">Phone number</label>
+                                                        <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -299,7 +249,7 @@
                                             <h6 class="fw-semibold">Street:</h6>
                                             <h2 class="accordion-header">
                                                 <button class="accordion-button collapsed shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseSix" aria-expanded="false" aria-controls="flush-collapseSix">
-                                                    <span>@Model.Input.Street</span>
+                                                    <span>@Model.UserContactInfo.Street</span>
                                                 </button>
                                             </h2>
                                             <div id="flush-collapseSix" class="accordion-collapse collapse p-2" data-bs-parent="#accordionFlushExample">
@@ -317,7 +267,7 @@
                                             <h6 class="fw-semibold">City</h6>
                                             <h2 class="accordion-header">
                                                 <button class="accordion-button collapsed shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseSeven" aria-expanded="false" aria-controls="flush-collapseSeven">
-                                                    <span>@Model.Input.City</span>
+                                                    <span>@Model.UserContactInfo.City</span>
                                                 </button>
                                             </h2>
                                             <div id="flush-collapseSeven" class="accordion-collapse collapse p-2" data-bs-parent="#accordionFlushExample">
@@ -335,7 +285,7 @@
                                             <h6 class="fw-semibold">State</h6>
                                             <h2 class="accordion-header">
                                                 <button class="accordion-button collapsed shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseEight" aria-expanded="false" aria-controls="flush-collapseEight">
-                                                    <span>@Model.Input.State</span>
+                                                    <span>@Model.UserContactInfo.State</span>
                                                 </button>
                                             </h2>
                                             <div id="flush-collapseEight" class="accordion-collapse collapse p-2" data-bs-parent="#accordionFlushExample">
@@ -353,7 +303,7 @@
                                             <h6 class="fw-semibold">Zip Code</h6>
                                             <h2 class="accordion-header">
                                                 <button class="accordion-button collapsed shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTen" aria-expanded="false" aria-controls="flush-collapseTen">
-                                                    <span>@Model.Input.ZipCode</span>
+                                                    <span>@Model.UserContactInfo.ZipCode</span>
                                                 </button>
                                             </h2>
                                             <div id="flush-collapseTen" class="accordion-collapse collapse p-2" data-bs-parent="#accordionFlushExample">

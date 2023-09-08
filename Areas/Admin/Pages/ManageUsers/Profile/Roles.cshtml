@@ -1,0 +1,111 @@
+﻿@page
+@model AdminPanel.Areas.Admin.Pages.ManageUsers.Profile.RolesModel
+@{
+    Layout = "_Dashboard";
+    ViewData["Title"] = "Personal Info";
+}
+
+<div class="content-wrapper">
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Roles Info</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item"><a asp-area="Admin" asp-page="/ManageUsers/Profile/Index" asp-route-id="@Model.UserData.Id">Profile</a></li>
+                        <li class="breadcrumb-item active">@Model.UserData.FullName</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="content">
+        <div class="container-fluid">
+            <div class="profile-heading">
+                <div class="my-2">
+                    <div class="d-flex justify-content-center">
+                        <div class="col-md-6">
+                            <partial name="_StatusMessage" for="StatusMessage" />
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <div class="my-2">
+                            <div class="d-flex justify-content-center">
+
+                                <div class="my-2">
+                                    @{
+                                        if (Model.UserProfilePicture != null)
+                                        {
+                                            <img id="profilePicture"
+                                                 class="rounded-circle"
+                                                 src="data:image/*;base64,@(Convert.ToBase64String(Model.UserProfilePicture))" />
+                                        }
+                                        else
+                                        {
+                                            <img id="profilePicture" class="rounded-circle" src="~/img/user.png">
+                                        }
+                                    }
+                                </div>
+
+                            </div>
+                            <h4 class="my-1 text-center">User, @Model.UserData.FullName</h4>
+                            <p class="text-center">Edit and manage info about @Model.UserData.FirstName and preferences</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="center">
+                    <form id="updateForm needs-validation" enctype="multipart/form-data" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                        <div class="profile-body">
+
+                            <div class="row justify-content-center align-items-center">
+                                <div class="col-sm-6 mb-3 mb-sm-0">
+                                    <div class="heading">
+                                        <h4>Manage @Model.UserData.FirstName's roles information </h4>
+                                        <p>Personal info and options to manage it. You can make some of this info, like your contact details, visible to others so they can reach you easily. You can also see a summary of your profiles.</p>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6 d-flex justify-content-center mb-3 mb-sm-0">
+                                    <img src="~/img/roles.svg" class="img-fluid w-50" alt="...">
+                                </div>
+                            </div>
+
+                            <form method="post">
+                                <div class="personal-info my-4">
+                                    <div class="border rounded border-3 p-5">
+                                        <h5 class="fw-bold">Roles Information </h5>
+
+                                        <ul class="list-group">
+                                            @for (int i = 0; i < Model.RoleList.Count; i++)
+                                            {
+                                                <li class="list-group-item">
+                                                    <div class="form-check m-1">
+                                                        <input type="hidden" asp-for="@Model.RoleList[i].RoleId" />
+                                                        <input type="hidden" asp-for="@Model.RoleList[i].RoleName" />
+                                                        <input asp-for="@Model.RoleList[i].Selected" class="form-check-input" />
+                                                        <label class="form-check-label" asp-for="@Model.RoleList[i].Selected">
+                                                            @Model.RoleList[i].RoleName
+                                                        </label>
+                                                    </div>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </div>
+                                    <div class="my-4 float-xl-end">
+                                        <button type="submit" class="btn btn-success w-100 shadow-none">Save changes</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+

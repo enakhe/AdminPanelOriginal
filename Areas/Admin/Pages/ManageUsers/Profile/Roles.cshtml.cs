@@ -8,11 +8,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 
 namespace AdminPanel.Areas.Admin.Pages.ManageUsers.Profile
 {
-
-
     [Authorize(Roles = "SuperAdmin")]
     public class RolesModel : PageModel
     {
@@ -31,8 +30,8 @@ namespace AdminPanel.Areas.Admin.Pages.ManageUsers.Profile
         [TempData]
         public string StatusMessage { get; set; }
         public ApplicationUser UserData { get; set; }
+        public IList<ApplicationUserRole> RoleList { get; set; } 
         public UserBackUpInfo UserBackUpInfo { get; set; }
-        public IList<ManageUserRolesViewModel> RoleList { get; set; }
         public byte[] UserProfilePicture { get; set; }
 
         public async Task LoadAsync(ApplicationUser user)
@@ -40,28 +39,7 @@ namespace AdminPanel.Areas.Admin.Pages.ManageUsers.Profile
             UserData = user;
             UserProfilePicture = user.ProfilePicture;
 
-            var model = new List<ManageUserRolesViewModel>();
-            foreach (var role in _roleManager.Roles)
-            {
-                if (!role.Name.Contains("SuperAdmin"))
-                {
-                    var userRolesViewModel = new ManageUserRolesViewModel
-                    {
-                        RoleId = role.Id,
-                        RoleName = role.Name
-                    };
-                    if (await _userManager.IsInRoleAsync(user, role.Name))
-                    {
-                        userRolesViewModel.Selected = true;
-                    }
-                    else
-                    {
-                        userRolesViewModel.Selected = false;
-                    }
-                    model.Add(userRolesViewModel);
-                }
-            }
-            RoleList = model;
+            RoleList = await _db.UserRoles.Where(userRole => userRole.UserId == user.Id).Include(userRole => userRole.ApplicationRole).ToListAsync();
         }
 
         public async Task OnGetAsync(string id, string returnUrl = null)
@@ -116,6 +94,11 @@ namespace AdminPanel.Areas.Admin.Pages.ManageUsers.Profile
                 }
             }
             return Page();
+        }
+
+        private async Task<List<string>> GetUserRoles(ApplicationUser user)
+        {
+            return new List<string>(await _userManager.GetRolesAsync(user));
         }
     }
 }

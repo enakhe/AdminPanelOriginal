@@ -102,7 +102,7 @@
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-floating mb-3">
-                                                    <input asp-for="Input.DOB" class="form-control shadow-none" aria-required="true" placeholder="name@example.com" />
+                                                    <input asp-for="Input.DOB" class="form-control shadow-none" aria-required="true" />
                                                     <label asp-for="Input.DOB" class="form-label">Date of birth</label>
                                                     <span asp-validation-for="Input.DOB" class="text-danger"></span>
                                                 </div>
@@ -155,14 +155,32 @@
                                             <h5>Assign Roles</h5>
                                             @for (int i = 0; i < Model.RoleList.Count; i++)
                                             {
-                                                <div class="form-check">
-                                                    <input type="hidden" asp-for="@Model.RoleList[i].RoleId" />
-                                                    <input type="hidden" asp-for="@Model.RoleList[i].RoleName" />
-                                                    <input asp-for="@Model.RoleList[i].Selected" class="form-check-input shadow-none" />
-                                                    <label class="form-check-label shadow-none" asp-for="@Model.RoleList[i].Selected">
-                                                        @Model.RoleList[i].RoleName
-                                                    </label>
+                                                <div class="row align-items-center">
+                                                    <div class="col-md-4">
+                                                        <div class="form-check">
+                                                            <input type="hidden" asp-for="@Model.RoleList[i].RoleId" />
+                                                            <input type="hidden" asp-for="@Model.RoleList[i].RoleName" />
+                                                            <input asp-for="@Model.RoleList[i].Selected" class="form-check-input shadow-none" />
+                                                            <label class="form-check-label shadow-none" asp-for="@Model.RoleList[i].Selected">
+                                                                @Model.RoleList[i].RoleName
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-floating mb-3">
+                                                            <input asp-for="@Model.RoleList[i].StartDate" class="form-control shadow-none" aria-required="true" />
+                                                            <label asp-for="@Model.RoleList[i].StartDate" class="form-label"></label>
+                                                        </div>
+                                                        
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-floating mb-3">
+                                                            <input asp-for="@Model.RoleList[i].EndDate" class="form-control shadow-none" aria-required="true" />
+                                                            <label asp-for="@Model.RoleList[i].EndDate" class="form-label"></label>
+                                                        </div>
+                                                    </div>
                                                 </div>
+                                                
                                             }
                                         </div>
                                     </div>
@@ -170,9 +188,9 @@
                                     <div class="col-md-6 my-3">
                                         <div>
                                             <h5>Personlization</h5>
-                                            <div class="form-check form-switch">
+                                            <div class="form-check mx-5form-switch">
                                                 <input class="form-check-input shadow-none" aria-required="true" asp-for="Input.IsAuthorized" type="checkbox" role="switch" checked>
-                                                <label class="form-check-label mx-3" asp-for="Input.IsAuthorized">Authorize</label>
+                                                <label class="form-check-label" asp-for="Input.IsAuthorized">Authorize</label>
                                             </div>
                                         </div>
                                     </div>

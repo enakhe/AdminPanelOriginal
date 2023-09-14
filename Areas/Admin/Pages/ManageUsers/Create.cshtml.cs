@@ -123,7 +123,6 @@ namespace AdminPanel.Areas.Admin.Pages.User
                         }
                     }
 
-
                     // Add Contact Info
                     ContactInfo contactInfo = new()
                     {
@@ -158,16 +157,29 @@ namespace AdminPanel.Areas.Admin.Pages.User
 
 
                     // Assign Roles
-                    var roles = await _userManager.GetRolesAsync(user);
-                    var roleResult = await _userManager.AddToRolesAsync(user, RoleList.Where(x => x.Selected).Select(y => y.RoleName));
+                    // var roles = await _userManager.GetRolesAsync(user);
+                    //var roleResult = await _userManager.AddToRolesAsync(user, RoleList.Where(x => x.Selected).Select(y => y.RoleName));
 
-                    if (roleResult.Succeeded)
+                    foreach(var selectedRoles in RoleList.Where(x => x.Selected))
                     {
-                        await _userManager.UpdateAsync(user);
-                        _db.SaveChanges();
-                        StatusMessage = "Successfully created user profile";
-                        return RedirectToPage("/ManageUsers/Index", new { area = "Admin", statusMessage = StatusMessage });
+                        var role = await _roleManager.FindByNameAsync(selectedRoles.RoleName);
+                        ApplicationUserRole userRole = new()
+                        {
+                            RoleId = selectedRoles.RoleId,
+                            UserId = user.Id,
+                            ApplicationUser = user,
+                            ApplicationRole = role,
+                            StartDate = selectedRoles.StartDate,
+                            EndDate = selectedRoles.EndDate,
+                        };
+
+                        await _db.UserRoles.AddAsync(userRole);
                     }
+
+                    await _userManager.UpdateAsync(user);
+                    _db.SaveChanges();
+                    StatusMessage = "Successfully created user profile";
+                    return RedirectToPage("/ManageUsers/Index", new { area = "Admin", statusMessage = StatusMessage });
                 }
                 foreach (var error in result.Errors)
                 {

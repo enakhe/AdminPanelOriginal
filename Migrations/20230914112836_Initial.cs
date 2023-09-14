@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -153,6 +154,27 @@ namespace AdminPanel.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UserBackUpInfos",
+                schema: "Identity",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    BackupEmail = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BackupPhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserBackUpInfos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserBackUpInfos_User_UserId",
+                        column: x => x.UserId,
+                        principalSchema: "Identity",
+                        principalTable: "User",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "UserClaims",
                 schema: "Identity",
                 columns: table => new
@@ -203,11 +225,23 @@ namespace AdminPanel.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DateAssigned = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    ApplicationRoleId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_UserRoles", x => new { x.UserId, x.RoleId });
+                    table.ForeignKey(
+                        name: "FK_UserRoles_Role_ApplicationRoleId",
+                        column: x => x.ApplicationRoleId,
+                        principalSchema: "Identity",
+                        principalTable: "Role",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_UserRoles_Role_RoleId",
                         column: x => x.RoleId,
@@ -215,6 +249,12 @@ namespace AdminPanel.Migrations
                         principalTable: "Role",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserRoles_User_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalSchema: "Identity",
+                        principalTable: "User",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_UserRoles_User_UserId",
                         column: x => x.UserId,
@@ -293,6 +333,12 @@ namespace AdminPanel.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_UserBackUpInfos_UserId",
+                schema: "Identity",
+                table: "UserBackUpInfos",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UserClaims_UserId",
                 schema: "Identity",
                 table: "UserClaims",
@@ -303,6 +349,18 @@ namespace AdminPanel.Migrations
                 schema: "Identity",
                 table: "UserLogins",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserRoles_ApplicationRoleId",
+                schema: "Identity",
+                table: "UserRoles",
+                column: "ApplicationRoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserRoles_ApplicationUserId",
+                schema: "Identity",
+                table: "UserRoles",
+                column: "ApplicationUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserRoles_RoleId",
@@ -328,6 +386,10 @@ namespace AdminPanel.Migrations
 
             migrationBuilder.DropTable(
                 name: "RoleClaims",
+                schema: "Identity");
+
+            migrationBuilder.DropTable(
+                name: "UserBackUpInfos",
                 schema: "Identity");
 
             migrationBuilder.DropTable(

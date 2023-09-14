@@ -142,6 +142,43 @@ namespace AdminPanel.Migrations
                     b.ToTable("User", "Identity");
                 });
 
+            modelBuilder.Entity("AdminPanel.Models.ApplicationUserRole", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("RoleId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ApplicationRoleId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("DateAssigned")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("ApplicationRoleId");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("UserRoles", "Identity");
+                });
+
             modelBuilder.Entity("AdminPanel.Models.ContactInfo", b =>
                 {
                     b.Property<string>("Id")
@@ -307,21 +344,6 @@ namespace AdminPanel.Migrations
                     b.ToTable("UserLogins", "Identity");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("RoleId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("UserId", "RoleId");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("UserRoles", "Identity");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
                     b.Property<string>("UserId")
@@ -339,6 +361,33 @@ namespace AdminPanel.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("UserTokens", "Identity");
+                });
+
+            modelBuilder.Entity("AdminPanel.Models.ApplicationUserRole", b =>
+                {
+                    b.HasOne("AdminPanel.Models.ApplicationRole", "ApplicationRole")
+                        .WithMany("JoinEntities")
+                        .HasForeignKey("ApplicationRoleId");
+
+                    b.HasOne("AdminPanel.Models.ApplicationUser", "ApplicationUser")
+                        .WithMany("JoinEntities")
+                        .HasForeignKey("ApplicationUserId");
+
+                    b.HasOne("AdminPanel.Models.ApplicationRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AdminPanel.Models.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationRole");
+
+                    b.Navigation("ApplicationUser");
                 });
 
             modelBuilder.Entity("AdminPanel.Models.ContactInfo", b =>
@@ -404,21 +453,6 @@ namespace AdminPanel.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
-                {
-                    b.HasOne("AdminPanel.Models.ApplicationRole", null)
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("AdminPanel.Models.ApplicationUser", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
                     b.HasOne("AdminPanel.Models.ApplicationUser", null)
@@ -428,11 +462,18 @@ namespace AdminPanel.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("AdminPanel.Models.ApplicationRole", b =>
+                {
+                    b.Navigation("JoinEntities");
+                });
+
             modelBuilder.Entity("AdminPanel.Models.ApplicationUser", b =>
                 {
                     b.Navigation("BackUp");
 
                     b.Navigation("Contact");
+
+                    b.Navigation("JoinEntities");
 
                     b.Navigation("Logs");
 

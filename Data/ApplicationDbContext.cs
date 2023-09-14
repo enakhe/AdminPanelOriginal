@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AdminPanel.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string>
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string, IdentityUserClaim<string>, ApplicationUserRole, IdentityUserLogin<string>, IdentityRoleClaim<string>, IdentityUserToken<string>>
     {
         public DbSet<ContactInfo> ContactInfos { get; set; }
         public DbSet<PersonalizationInfo> PersonalizationInfos { get; set; }
@@ -29,9 +29,9 @@ namespace AdminPanel.Data
             {
                 _ = entity.ToTable(name: "Role");
             });
-            _ = builder.Entity<IdentityUserRole<string>>(entity =>
+            _ = builder.Entity<ApplicationUserRole>(entity =>
             {
-                _ = entity.ToTable("UserRoles");
+                _ = entity.ToTable(name: "UserRoles");
             });
             _ = builder.Entity<IdentityUserClaim<string>>(entity =>
             {

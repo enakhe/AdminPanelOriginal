@@ -22,7 +22,7 @@
 
 document.getElementById("Input_UserName").addEventListener("keyup", async () => {
     const username = document.getElementById("Input_UserName").value;
-    const response = await fetch(`https://localhost:7047/UserApi/username?username=${username}`, {
+    const response = await fetch(`https://localhost:5141/UserApi/username?username=${username}`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json-patch+json",

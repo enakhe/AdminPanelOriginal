@@ -47,7 +47,7 @@ namespace AdminPanel.Areas.Admin.Pages.User
 
                     var thisViewModel = new UserRolesViewModel();
                     thisViewModel.Id = user.Id;
-                    thisViewModel.Username = user.UserName;
+                    thisViewModel.UserName = user.UserName;
                     thisViewModel.Email = user.Email;
                     thisViewModel.FullName = user.FullName;
                     thisViewModel.ProfilePicture = user.ProfilePicture;

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using static AdminPanel.Enum.DefaultRoles;
 
 namespace AdminPanel.Areas.Admin.Pages.ManageUsers.Profile
 {
@@ -30,7 +31,8 @@ namespace AdminPanel.Areas.Admin.Pages.ManageUsers.Profile
         [TempData]
         public string StatusMessage { get; set; }
         public ApplicationUser UserData { get; set; }
-        public IList<ApplicationUserRole> RoleList { get; set; } 
+        public IList<RoleViewModel> RoleList { get; set; }
+        public IList<ManageUserRolesViewModel> AssignRoleList { get; set; }
         public UserBackUpInfo UserBackUpInfo { get; set; }
         public byte[] UserProfilePicture { get; set; }
 
@@ -39,7 +41,71 @@ namespace AdminPanel.Areas.Admin.Pages.ManageUsers.Profile
             UserData = user;
             UserProfilePicture = user.ProfilePicture;
 
-            RoleList = await _db.UserRoles.Where(userRole => userRole.UserId == user.Id).Include(userRole => userRole.ApplicationRole).ToListAsync();
+
+            // Loading all the roles a user belongs to
+            var userRoles = await _db.UserRoles.Where(userRole => userRole.UserId == user.Id).Include(userRole => userRole.ApplicationRole).ToListAsync();
+            var roleModel = new List<RoleViewModel>();
+            if (userRoles != null)
+            {
+                foreach (var userRole in userRoles)
+                {
+                    var role = await _db.Roles.FirstOrDefaultAsync(ur => ur.Id == userRole.RoleId);
+
+                    var roleViewModel = new RoleViewModel();
+                    roleViewModel.RoleName = role.Name;
+                    roleViewModel.StartDate = userRole.StartDate;
+                    roleViewModel.EndDate = userRole.EndDate;
+
+                    if (userRole.StartDate > DateTime.Now)
+                    {
+                        roleViewModel.isActive = false;
+                    }
+                    else
+                    {
+                        roleViewModel.isActive = true;
+                        userRole.isActive = true;
+                        _db.Entry(userRole).State = EntityState.Modified;
+
+                        roleViewModel.DaysLeft = userRole.EndDate - DateTime.Now;
+                    }
+                    roleModel.Add(roleViewModel);
+                }
+                RoleList = roleModel;
+            }
+            
+
+
+            // Loading all roles 
+            var model = new List<ManageUserRolesViewModel>();
+            foreach (var role in _roleManager.Roles)
+            {
+                if (!role.Name.Contains("SuperAdmin"))
+                {
+                    var userRole = await _db.UserRoles.FirstOrDefaultAsync(userRole => userRole.RoleId == role.Id);
+
+                    var userRolesViewModel = new ManageUserRolesViewModel();
+
+                    userRolesViewModel.RoleId = role.Id;
+                    userRolesViewModel.RoleName = role.Name;
+
+                    if (userRole != null)
+                    {
+                        userRolesViewModel.StartDate = userRole.StartDate;
+                        userRolesViewModel.EndDate = userRole.EndDate;
+                    }
+                    
+                    if (await _userManager.IsInRoleAsync(user, role.Name))
+                    {
+                        userRolesViewModel.Selected = true;
+                    }
+                    else
+                    {
+                        userRolesViewModel.Selected = false;
+                    }
+                    model.Add(userRolesViewModel);
+                }
+            }
+            AssignRoleList = model;
         }
 
         public async Task OnGetAsync(string id, string returnUrl = null)
@@ -59,7 +125,7 @@ namespace AdminPanel.Areas.Admin.Pages.ManageUsers.Profile
             }
         }
 
-        public async Task<IActionResult> OnPostAsync(List<ManageUserRolesViewModel> RoleList, string id, string returnUrl = null)
+        public async Task<IActionResult> OnPostAsync(List<ManageUserRolesViewModel> AssignRoleList, string id, string returnUrl = null)
         {
             if (ModelState.IsValid)
             {
@@ -75,22 +141,27 @@ namespace AdminPanel.Areas.Admin.Pages.ManageUsers.Profile
                         return Page();
                     }
 
-                    result = await _userManager.AddToRolesAsync(user, RoleList.Where(x => x.Selected).Select(y => y.RoleName));
-
-                    if (!result.Succeeded)
+                    foreach (var selectedRoles in AssignRoleList.Where(x => x.Selected))
                     {
-                        ModelState.AddModelError("", "Cannot add selected roles to user");
-                        return Page();
+                        var role = await _roleManager.FindByNameAsync(selectedRoles.RoleName);
+                        ApplicationUserRole userRole = new()
+                        {
+                            RoleId = selectedRoles.RoleId,
+                            UserId = user.Id,
+                            ApplicationUser = user,
+                            ApplicationRole = role,
+                            StartDate = selectedRoles.StartDate,
+                            EndDate = selectedRoles.EndDate,
+                        };
+
+                        await _db.UserRoles.AddAsync(userRole);
                     }
 
-                    if (result.Succeeded)
-                    {
-                        await _userManager.UpdateAsync(user);
-                        _db.SaveChanges();
-                        StatusMessage = "Successfully assigned role";
-                        await LoadAsync(user);
-                        return Page();
-                    }
+                    await _userManager.UpdateAsync(user);
+                    _db.SaveChanges();
+                    await LoadAsync(user);
+                    StatusMessage = "Successfully created user profile";
+                    return Page();
                 }
             }
             return Page();

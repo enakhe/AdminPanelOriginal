@@ -10,6 +10,7 @@ namespace AdminPanel.Models
         public DateTime DateAssigned { get; set; } = DateTime.Now;
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
+        public bool isActive { get; set; } = false;
 
         public virtual ApplicationUser ApplicationUser { get; set; }
         public virtual ApplicationRole ApplicationRole { get; set; }

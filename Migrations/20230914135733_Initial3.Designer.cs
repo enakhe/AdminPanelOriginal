@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AdminPanel.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230914112836_Initial")]
-    partial class Initial
+    [Migration("20230914135733_Initial3")]
+    partial class Initial3
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -170,6 +170,9 @@ namespace AdminPanel.Migrations
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<bool>("isActive")
+                        .HasColumnType("bit");
 
                     b.HasKey("UserId", "RoleId");
 

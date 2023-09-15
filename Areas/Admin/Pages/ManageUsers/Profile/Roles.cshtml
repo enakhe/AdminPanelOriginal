@@ -78,7 +78,7 @@
                         <div class="row">
                             <div class="col-md-5">
                                 <div class="personal-info my-4">
-                                    <div class="border rounded border-3 p-5">
+                                    <div class="border rounded border-3 p-3">
                                         <h5 class="fw-bold">Roles Information </h5>
                                         <div class="accordion accordion-flush" id="accordionFlushExample">
                                             @{
@@ -90,6 +90,16 @@
                                                             <h2 class="accordion-header">
                                                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-@userRole.RoleName" aria-expanded="false" aria-controls="flush-@userRole.RoleName">
                                                                     @userRole.RoleName
+                                                                    @{
+                                                                        if (@userRole.isActive == false)
+                                                                        {
+                                                                            <span class="badge rounded-pill text-bg-danger mx-3">Inactive</span>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <span class="badge rounded-pill text-bg-success mx-3">Active</span>
+                                                                        }
+                                                                    }
                                                                 </button>
                                                             </h2>
                                                             <div id="flush-@userRole.RoleName" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
@@ -133,7 +143,7 @@
                                 <form id="updateForm needs-validation" enctype="multipart/form-data" method="post">
                                     <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
                                     <div class="personal-info my-4">
-                                        <div class="border rounded border-3 p-5">
+                                        <div class="border rounded border-3 p-3">
                                             <h5 class="fw-bold">Manage Role </h5>
 
                                             @for (int i = 0; i < Model.AssignRoleList.Count; i++)

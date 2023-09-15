@@ -8,6 +8,8 @@ namespace AdminPanel.Data
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string, IdentityUserClaim<string>, ApplicationUserRole, IdentityUserLogin<string>, IdentityRoleClaim<string>, IdentityUserToken<string>>
     {
         public DbSet<ContactInfo> ContactInfos { get; set; }
+        public DbSet<ApplicationRoleCategory> RoleCategories { get; set; }
+        public DbSet<ApplicationCategory> Categories { get; set; }
         public DbSet<PersonalizationInfo> PersonalizationInfos { get; set; }
         public DbSet<LogsInfo> LogsInfos { get; set; }
         public DbSet<UserBackUpInfo> UserBackUpInfos { get; set; }

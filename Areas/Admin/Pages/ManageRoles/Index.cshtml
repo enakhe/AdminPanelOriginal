@@ -53,6 +53,7 @@
                                     <tr>
                                         <th>Name</th>
                                         <th>No of users</th>
+                                        <th>Date created</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -71,22 +72,13 @@
                                                     <td>
                                                         @role.NoOfUser
                                                     </td>
+                                                    <td>
+                                                        @role.DateCreated.ToString("MMM dd, yyyy")
+                                                    </td>
                                                     <td class="dropdown">
-                                                        <a class="text-dark p" href="#" data-toggle="dropdown" aria-expanded="false">
-                                                            <i class="fa-solid fa-ellipsis-vertical"></i>
+                                                        <a asp-area="Admin" asp-page="/ManageRoles/Profile/Index" asp-route-id="@role.Id" class="btn btn-success shadow-none">
+                                                            Manage
                                                         </a>
-                                                        <ul class="dropdown-menu dropdown-menu-md dropdown-menu-center">
-                                                            <li class="dropdown-item">
-                                                                <a asp-area="Admin" class="text-primary" asp-page="/User/Edit" asp-route-id="@role.Id">
-                                                                    <i class="fa-solid text-primary fa-edit"></i> Edit
-                                                                </a>
-                                                            </li>
-                                                            <li class="dropdown-item">
-                                                                <a asp-area="Admin" class="text-danger" asp-page="/User/Delete" asp-route-id="@role.Id">
-                                                                    <i class="fa-solid text-danger fa-trash"></i> Delete
-                                                                </a>
-                                                            </li>
-                                                        </ul>
                                                     </td>
 
                                                 </tr>
@@ -99,6 +91,7 @@
                                     <tr>
                                         <th>Name</th>
                                         <th>No of users</th>
+                                        <th>Date created</th>
                                         <th>Action</th>
                                     </tr>
                                 </tfoot>

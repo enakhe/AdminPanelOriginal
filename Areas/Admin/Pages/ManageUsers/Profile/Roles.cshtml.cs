@@ -56,7 +56,7 @@ namespace AdminPanel.Areas.Admin.Pages.ManageUsers.Profile
                     roleViewModel.StartDate = userRole.StartDate;
                     roleViewModel.EndDate = userRole.EndDate;
 
-                    if (userRole.StartDate > DateTime.Now)
+                    if (userRole.StartDate > DateTime.Now || userRole.EndDate < DateTime.Now)
                     {
                         roleViewModel.isActive = false;
                     }
@@ -81,7 +81,7 @@ namespace AdminPanel.Areas.Admin.Pages.ManageUsers.Profile
             {
                 if (!role.Name.Contains("SuperAdmin"))
                 {
-                    var userRole = await _db.UserRoles.FirstOrDefaultAsync(userRole => userRole.RoleId == role.Id);
+                    var userRole = await _db.UserRoles.FirstOrDefaultAsync(userRole => userRole.UserId == user.Id);
 
                     var userRolesViewModel = new ManageUserRolesViewModel();
 

@@ -14,7 +14,6 @@ namespace AdminPanel.Data
         public DbSet<LogsInfo> LogsInfos { get; set; }
         public DbSet<UserBackUpInfo> UserBackUpInfos { get; set; }
 
-
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {

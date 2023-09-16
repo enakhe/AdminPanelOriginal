@@ -1,21 +1,12 @@
 ﻿#nullable disable
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+using AdminPanel.Data;
+using AdminPanel.InputModel;
+using AdminPanel.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
-using System.Net.Mail;
-using AdminPanel.Models;
-using AdminPanel.InputModel;
-using AdminPanel.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace AdminPanel.Areas.Identity.Pages.Account
@@ -36,7 +27,7 @@ namespace AdminPanel.Areas.Identity.Pages.Account
         }
 
         [TempData]
-        public string StatusMessage { get; set; }   
+        public string StatusMessage { get; set; }
 
         [BindProperty]
         public LoginInputModel Input { get; set; }

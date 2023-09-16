@@ -4,7 +4,7 @@ namespace AdminPanel.Models
 {
     public class ApplicationCategory
     {
-        public ApplicationCategory() 
+        public ApplicationCategory()
         {
             this.JoinEntities = new HashSet<ApplicationRoleCategory>();
         }

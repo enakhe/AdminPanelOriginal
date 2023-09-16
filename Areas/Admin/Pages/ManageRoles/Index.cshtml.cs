@@ -28,18 +28,16 @@ namespace AdminPanel.Areas.Admin.Pages.Roles
         [TempData]
         public string StatusMessage { get; set; }
 
-        public async Task OnGet(string statusMessage, string returnUrl = null)
+        public async Task OnGet(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
             if (ModelState.IsValid)
             {
-                StatusMessage = statusMessage;
-                RoleList = await _roleManager.Roles.Where(role => !role.Name.Contains("SuperAdmin")).ToListAsync();
+                RoleList = await _roleManager.Roles.Where(role => !role.Name.Contains("SuperAdmin")).Include(role => role.Manager).ToListAsync();
 
                 foreach (var role in RoleList)
                 {
                     var NoOfUser = _db.UserRoles.Where(userRole => userRole.RoleId == role.Id).Count();
-
                     var userRole = _db.UserRoles.FirstOrDefault(userRole => userRole.RoleId == role.Id);
 
                     if (userRole != null)
@@ -50,6 +48,12 @@ namespace AdminPanel.Areas.Admin.Pages.Roles
                             thisRole.NoOfUser = NoOfUser;
                             await _roleManager.UpdateAsync(thisRole);
                         }
+                    }
+                    else if (NoOfUser == 0)
+                    {
+                        var thisRole = _roleManager.Roles.FirstOrDefault(r => r.Id == role.Id);
+                        thisRole.NoOfUser = NoOfUser;
+                        await _roleManager.UpdateAsync(thisRole);
                     }
                 }
             }

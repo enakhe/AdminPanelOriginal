@@ -1,7 +1,6 @@
 #nullable disable
 
 using AdminPanel.Data;
-using AdminPanel.InputModel;
 using AdminPanel.Models;
 using AdminPanel.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -9,7 +8,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using static AdminPanel.Enum.DefaultRoles;
 
 namespace AdminPanel.Areas.Admin.Pages.ManageUsers.Profile
 {
@@ -72,7 +70,7 @@ namespace AdminPanel.Areas.Admin.Pages.ManageUsers.Profile
                 }
                 RoleList = roleModel;
             }
-            
+
 
 
             // Loading all roles 
@@ -93,7 +91,7 @@ namespace AdminPanel.Areas.Admin.Pages.ManageUsers.Profile
                         userRolesViewModel.StartDate = userRole.StartDate;
                         userRolesViewModel.EndDate = userRole.EndDate;
                     }
-                    
+
                     if (await _userManager.IsInRoleAsync(user, role.Name))
                     {
                         userRolesViewModel.Selected = true;

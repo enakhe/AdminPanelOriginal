@@ -1,4 +1,115 @@
 ﻿@page
 @model AdminPanel.Areas.Admin.Pages.Roles.CreateModel
+@using AdminPanel.Models
 @{
+    ViewData["Title"] = "Users";
+    Layout = "_Dashboard";
 }
+
+<div class="content-wrapper">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Create a new user</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item"><a href="/Admin/Index">Dashboard</a></li>
+                        <li class="breadcrumb-item active">Role</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="d-flex justify-content-center my-3 align-items-center">
+                <div class="col-md-10">
+                    <div class="card">
+                        <div class="card-header bg-dark">
+                            <h3 class="card-title text-light">Role | Create</h3>
+
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                    <i class="fa-solid fa-minus text-light"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <form id="createForm needs-validation" method="post" enctype="multipart/form-data">
+                                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+                                <div class="d-flex justify-content-center">
+                                    <div class="mb-3 col-md-3">
+                                        <div class="">
+                                            <img id="profilePicture" class="rounded-circle" src="~/img/settings.png" width="50">
+                                            <input class="form-control shadow-none my-3" asp-for="Input.Icon" onchange="document.getElementById('profilePicture').src = window.URL.createObjectURL(this.files[0])" type="file" id="formFile">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-floating mb-3">
+                                            <input asp-for="Input.Name" class="form-control shadow-none" aria-required="true" placeholder="Role name" />
+                                            <label asp-for="Input.Name" class="form-label">Name</label>
+                                            <span asp-validation-for="Input.Name" class="text-danger"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-floating mb-3">
+                                            <textarea asp-for="Input.Description" class="form-control shadow-none" aria-required="true" placeholder="Role description"></textarea>
+                                            <label asp-for="Input.Description" class="form-label">Description</label>
+                                            <span asp-validation-for="Input.Description" class="text-danger"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-floating mb-3">
+                                            <input asp-for="Input.Tag" class="form-control shadow-none" aria-required="true" placeholder="Tag" />
+                                            <label asp-for="Input.Tag" class="form-label">Role tag</label>
+                                            <span asp-validation-for="Input.Tag" class="text-danger"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-floating mb-3">
+                                            <select class="form-control shadow-none" id="ManagerId" name="ManagerId">
+                                                @{
+                                                    if (Model.ApplicationUserList != null)
+                                                    {
+                                                        foreach (ApplicationUser user in Model.ApplicationUserList)
+                                                        {
+                                                            <option value="@user.Id">@user.FullName</option>
+                                                        }
+                                                    }
+                                                }
+                                            </select>
+                                            <label for="Role Manager" class="form-label">Role Manager</label>
+                                        </div>
+                                        
+                                    </div>
+                                    
+
+                                    <div class="col-md-6">
+                                        <div class="form-floating mb-3">
+                                            <input asp-for="Input.ExpirationDate" class="form-control shadow-none" aria-required="true" />
+                                            <label asp-for="Input.ExpirationDate" class="form-label">Expiration date</label>
+                                            <span asp-validation-for="Input.ExpirationDate" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="w-100 btn btn-lg btn-success shadow-none">Save</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

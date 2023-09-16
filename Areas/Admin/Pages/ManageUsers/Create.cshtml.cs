@@ -160,7 +160,7 @@ namespace AdminPanel.Areas.Admin.Pages.User
                     // var roles = await _userManager.GetRolesAsync(user);
                     //var roleResult = await _userManager.AddToRolesAsync(user, RoleList.Where(x => x.Selected).Select(y => y.RoleName));
 
-                    foreach(var selectedRoles in RoleList.Where(x => x.Selected))
+                    foreach (var selectedRoles in RoleList.Where(x => x.Selected))
                     {
                         var role = await _roleManager.FindByNameAsync(selectedRoles.RoleName);
                         ApplicationUserRole userRole = new()

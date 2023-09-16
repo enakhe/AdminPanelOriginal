@@ -25,22 +25,14 @@
     </section>
     <section class="content">
         <div class="container-fluid">
-            <div class="col-md-12">
-                <partial name="_StatusMessage" for="StatusMessage" />
-            </div>
-            <form id="createForm needs-validation" method="post" asp-area="Admin" asp-page="/ManageRoles/Create">
-                <div class="row align-items-center">
-                    <div class="col-md-10">
-                        <div class="form-floating mb-0 py-1">
-                            <input name="roleName" id="roleName" class="form-control shadow-none" placeholder="Role name">
-                            <label for="Role name" class="form-label">Role name</label>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <button type="submit" class="btn btn-success py-3 px-4 shadow-none">Create</button>
-                    </div>
+            <div class="row align-items-center">
+                <div class="col-md-10">
+                    <partial name="_StatusMessage" for="StatusMessage" />
                 </div>
-            </form>
+                <div class="col-lg-2">
+                    <a asp-area="Admin" asp-page="/ManageRoles/Create" class="btn btn-success py-2 px-4 shadow-none">Create</a>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-12">
                     <div class="card">
@@ -53,6 +45,7 @@
                                     <tr>
                                         <th>Name</th>
                                         <th>No of users</th>
+                                        <th>Role manager</th>
                                         <th>Date created</th>
                                         <th>Action</th>
                                     </tr>
@@ -65,12 +58,26 @@
                                             {
                                                 <tr>
                                                     <td>
-                                                        <a asp-action="" asp-controller="User">
-                                                            @role.Name
-                                                        </a>
+                                                        @{
+                                                            if (role.Icon != null)
+                                                            {
+                                                                <a asp-area="Admin" asp-page="/ManageRoles/Profile/Index" asp-route-id="@role.Id">
+                                                                    <img class="user-image" src="data:image/*;base64,@(Convert.ToBase64String(role.Icon))"> @role.Name
+                                                                </a>
+                                                            }
+                                                            else
+                                                            {
+                                                                <a asp-area="Admin" asp-page="/ManageRoles/Profile/Index" asp-route-id="@role.Id">
+                                                                    <img class="user-image" class="rounded-circle" object-fit:cover" src="~/img/user.png"> @role.Name
+                                                                </a>
+                                                            }
+                                                        }
                                                     </td>
                                                     <td>
                                                         @role.NoOfUser
+                                                    </td>
+                                                    <td>
+                                                        @role.Manager.FullName
                                                     </td>
                                                     <td>
                                                         @role.DateCreated.ToString("MMM dd, yyyy")
@@ -91,6 +98,7 @@
                                     <tr>
                                         <th>Name</th>
                                         <th>No of users</th>
+                                        <th>Role manager</th>
                                         <th>Date created</th>
                                         <th>Action</th>
                                     </tr>

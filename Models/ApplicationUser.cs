@@ -13,6 +13,7 @@ namespace AdminPanel.Models
             this.Logs = new HashSet<LogsInfo>();
             this.BackUp = new HashSet<UserBackUpInfo>();
             this.JoinEntities = new HashSet<ApplicationUserRole>();
+            this.RoleManager = new HashSet<ApplicationRole>();
         }
 
         //Basic Infromation
@@ -30,6 +31,7 @@ namespace AdminPanel.Models
         public virtual ICollection<LogsInfo> Logs { get; set; }
         public virtual ICollection<UserBackUpInfo> BackUp { get; set; }
         public virtual ICollection<ApplicationUserRole> JoinEntities { get; set; }
+        public virtual ICollection<ApplicationRole> RoleManager { get; set; }
 
     }
 }

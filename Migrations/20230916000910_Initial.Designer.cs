@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AdminPanel.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230914135733_Initial3")]
-    partial class Initial3
+    [Migration("20230916000910_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,6 +25,19 @@ namespace AdminPanel.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("AdminPanel.Models.ApplicationCategory", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categories", "Identity");
+                });
 
             modelBuilder.Entity("AdminPanel.Models.ApplicationRole", b =>
                 {
@@ -38,6 +51,18 @@ namespace AdminPanel.Migrations
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ExpirationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<byte[]>("Icon")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("ManagerId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Name")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -49,7 +74,15 @@ namespace AdminPanel.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Tag")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("ManagerId");
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
@@ -57,6 +90,49 @@ namespace AdminPanel.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("Role", "Identity");
+                });
+
+            modelBuilder.Entity("AdminPanel.Models.ApplicationRoleCategory", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ApplicationRoleId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("CategoryId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("RoleId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationRoleId");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("RoleCategories", "Identity");
+                });
+
+            modelBuilder.Entity("AdminPanel.Models.ApplicationRoleManager", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("RoleId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RoleManagers", "Identity");
                 });
 
             modelBuilder.Entity("AdminPanel.Models.ApplicationUser", b =>
@@ -369,6 +445,45 @@ namespace AdminPanel.Migrations
                     b.ToTable("UserTokens", "Identity");
                 });
 
+            modelBuilder.Entity("AdminPanel.Models.ApplicationRole", b =>
+                {
+                    b.HasOne("AdminPanel.Models.ApplicationUser", "Manager")
+                        .WithMany("RoleManager")
+                        .HasForeignKey("ManagerId");
+
+                    b.Navigation("Manager");
+                });
+
+            modelBuilder.Entity("AdminPanel.Models.ApplicationRoleCategory", b =>
+                {
+                    b.HasOne("AdminPanel.Models.ApplicationRole", "ApplicationRole")
+                        .WithMany("JoinEntitiesCategory")
+                        .HasForeignKey("ApplicationRoleId");
+
+                    b.HasOne("AdminPanel.Models.ApplicationCategory", "Category")
+                        .WithMany("JoinEntities")
+                        .HasForeignKey("CategoryId");
+
+                    b.Navigation("ApplicationRole");
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("AdminPanel.Models.ApplicationRoleManager", b =>
+                {
+                    b.HasOne("AdminPanel.Models.ApplicationRole", "Role")
+                        .WithMany("RoleManagers")
+                        .HasForeignKey("RoleId");
+
+                    b.HasOne("AdminPanel.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Role");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("AdminPanel.Models.ApplicationUserRole", b =>
                 {
                     b.HasOne("AdminPanel.Models.ApplicationRole", "ApplicationRole")
@@ -468,9 +583,18 @@ namespace AdminPanel.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("AdminPanel.Models.ApplicationCategory", b =>
+                {
+                    b.Navigation("JoinEntities");
+                });
+
             modelBuilder.Entity("AdminPanel.Models.ApplicationRole", b =>
                 {
                     b.Navigation("JoinEntities");
+
+                    b.Navigation("JoinEntitiesCategory");
+
+                    b.Navigation("RoleManagers");
                 });
 
             modelBuilder.Entity("AdminPanel.Models.ApplicationUser", b =>
@@ -484,6 +608,8 @@ namespace AdminPanel.Migrations
                     b.Navigation("Logs");
 
                     b.Navigation("Personalization");
+
+                    b.Navigation("RoleManager");
                 });
 #pragma warning restore 612, 618
         }

@@ -33,7 +33,7 @@ namespace AdminPanel.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ApplicationCategory", "Identity");
+                    b.ToTable("Categories", "Identity");
                 });
 
             modelBuilder.Entity("AdminPanel.Models.ApplicationRole", b =>
@@ -57,8 +57,8 @@ namespace AdminPanel.Migrations
                     b.Property<byte[]>("Icon")
                         .HasColumnType("varbinary(max)");
 
-                    b.Property<string>("ManagerID")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("ManagerId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
                         .HasMaxLength(256)
@@ -78,6 +78,8 @@ namespace AdminPanel.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ManagerId");
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
@@ -107,7 +109,27 @@ namespace AdminPanel.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("ApplicationRoleCategory", "Identity");
+                    b.ToTable("RoleCategories", "Identity");
+                });
+
+            modelBuilder.Entity("AdminPanel.Models.ApplicationRoleManager", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("RoleId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RoleManagers", "Identity");
                 });
 
             modelBuilder.Entity("AdminPanel.Models.ApplicationUser", b =>
@@ -420,6 +442,15 @@ namespace AdminPanel.Migrations
                     b.ToTable("UserTokens", "Identity");
                 });
 
+            modelBuilder.Entity("AdminPanel.Models.ApplicationRole", b =>
+                {
+                    b.HasOne("AdminPanel.Models.ApplicationUser", "Manager")
+                        .WithMany("RoleManager")
+                        .HasForeignKey("ManagerId");
+
+                    b.Navigation("Manager");
+                });
+
             modelBuilder.Entity("AdminPanel.Models.ApplicationRoleCategory", b =>
                 {
                     b.HasOne("AdminPanel.Models.ApplicationRole", "ApplicationRole")
@@ -433,6 +464,21 @@ namespace AdminPanel.Migrations
                     b.Navigation("ApplicationRole");
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("AdminPanel.Models.ApplicationRoleManager", b =>
+                {
+                    b.HasOne("AdminPanel.Models.ApplicationRole", "Role")
+                        .WithMany("RoleManagers")
+                        .HasForeignKey("RoleId");
+
+                    b.HasOne("AdminPanel.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Role");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("AdminPanel.Models.ApplicationUserRole", b =>
@@ -544,6 +590,8 @@ namespace AdminPanel.Migrations
                     b.Navigation("JoinEntities");
 
                     b.Navigation("JoinEntitiesCategory");
+
+                    b.Navigation("RoleManagers");
                 });
 
             modelBuilder.Entity("AdminPanel.Models.ApplicationUser", b =>
@@ -557,6 +605,8 @@ namespace AdminPanel.Migrations
                     b.Navigation("Logs");
 
                     b.Navigation("Personalization");
+
+                    b.Navigation("RoleManager");
                 });
 #pragma warning restore 612, 618
         }

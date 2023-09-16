@@ -4,14 +4,10 @@ using AdminPanel.Data;
 using AdminPanel.InputModel;
 using AdminPanel.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using Mono.TextTemplating;
-using System.IO;
-using System.Reflection.Emit;
 using System.Text.RegularExpressions;
 
 namespace AdminPanel.Areas.Admin.Pages.ManageUsers.Profile

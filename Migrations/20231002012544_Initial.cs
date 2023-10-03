@@ -15,6 +15,41 @@ namespace AdminPanel.Migrations
                 name: "Identity");
 
             migrationBuilder.CreateTable(
+                name: "AuditActionType",
+                schema: "Identity",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AuditActionType", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AuditDeviceInfo",
+                schema: "Identity",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    DeviceID = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DeviceType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OperatingSystem = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BrowserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BrowserVersion = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IPAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DeviceLocation = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DeviceOwner = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AuditDeviceInfo", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Categories",
                 schema: "Identity",
                 columns: table => new
@@ -58,6 +93,43 @@ namespace AdminPanel.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_User", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AuditLoggings",
+                schema: "Identity",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    AdminId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    TypeId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DeviceInfoId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AuditActionTypeId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    AuditDeviceInfoId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AuditLoggings", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AuditLoggings_AuditActionType_AuditActionTypeId",
+                        column: x => x.AuditActionTypeId,
+                        principalSchema: "Identity",
+                        principalTable: "AuditActionType",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_AuditLoggings_AuditDeviceInfo_AuditDeviceInfoId",
+                        column: x => x.AuditDeviceInfoId,
+                        principalSchema: "Identity",
+                        principalTable: "AuditDeviceInfo",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_AuditLoggings_User_UserId",
+                        column: x => x.UserId,
+                        principalSchema: "Identity",
+                        principalTable: "User",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -294,32 +366,6 @@ namespace AdminPanel.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "RoleManagers",
-                schema: "Identity",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RoleManagers", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_RoleManagers_Role_RoleId",
-                        column: x => x.RoleId,
-                        principalSchema: "Identity",
-                        principalTable: "Role",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_RoleManagers_User_UserId",
-                        column: x => x.UserId,
-                        principalSchema: "Identity",
-                        principalTable: "User",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "UserRoles",
                 schema: "Identity",
                 columns: table => new
@@ -364,6 +410,24 @@ namespace AdminPanel.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AuditLoggings_AuditActionTypeId",
+                schema: "Identity",
+                table: "AuditLoggings",
+                column: "AuditActionTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AuditLoggings_AuditDeviceInfoId",
+                schema: "Identity",
+                table: "AuditLoggings",
+                column: "AuditDeviceInfoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AuditLoggings_UserId",
+                schema: "Identity",
+                table: "AuditLoggings",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ContactInfos_UserId",
@@ -414,18 +478,6 @@ namespace AdminPanel.Migrations
                 schema: "Identity",
                 table: "RoleClaims",
                 column: "RoleId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RoleManagers_RoleId",
-                schema: "Identity",
-                table: "RoleManagers",
-                column: "RoleId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RoleManagers_UserId",
-                schema: "Identity",
-                table: "RoleManagers",
-                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "EmailIndex",
@@ -482,6 +534,10 @@ namespace AdminPanel.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "AuditLoggings",
+                schema: "Identity");
+
+            migrationBuilder.DropTable(
                 name: "ContactInfos",
                 schema: "Identity");
 
@@ -502,10 +558,6 @@ namespace AdminPanel.Migrations
                 schema: "Identity");
 
             migrationBuilder.DropTable(
-                name: "RoleManagers",
-                schema: "Identity");
-
-            migrationBuilder.DropTable(
                 name: "UserBackUpInfos",
                 schema: "Identity");
 
@@ -523,6 +575,14 @@ namespace AdminPanel.Migrations
 
             migrationBuilder.DropTable(
                 name: "UserTokens",
+                schema: "Identity");
+
+            migrationBuilder.DropTable(
+                name: "AuditActionType",
+                schema: "Identity");
+
+            migrationBuilder.DropTable(
+                name: "AuditDeviceInfo",
                 schema: "Identity");
 
             migrationBuilder.DropTable(

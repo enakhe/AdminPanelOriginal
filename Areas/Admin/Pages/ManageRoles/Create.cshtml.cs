@@ -46,7 +46,7 @@ namespace AdminPanel.Areas.Admin.Pages.Roles
                     ApplicationUserList = allUser;
                 }
             }
-        }  
+        }
         public async Task OnGetAsync(string returnUrl = null)
         {
             if (ModelState.IsValid)

@@ -13,6 +13,9 @@ namespace AdminPanel.Data
         public DbSet<PersonalizationInfo> PersonalizationInfos { get; set; }
         public DbSet<LogsInfo> LogsInfos { get; set; }
         public DbSet<UserBackUpInfo> UserBackUpInfos { get; set; }
+        public DbSet<AuditLogging> AuditLoggings { get; set; }
+        public DbSet<AuditActionType> AuditActionType { get; set; }
+        public DbSet<AuditDeviceInfo> AuditDeviceInfo { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)

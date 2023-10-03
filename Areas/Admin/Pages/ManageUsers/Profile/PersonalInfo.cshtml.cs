@@ -31,13 +31,11 @@ namespace AdminPanel.Areas.Admin.Pages.ManageUsers.Profile
         public string StatusMessage { get; set; }
         public ApplicationUser UserData { get; set; }
         public ContactInfo UserContactInfo { get; set; }
-        public UserBackUpInfo UserBackUpInfo { get; set; }
         public byte[] UserProfilePicture { get; set; }
 
         public void LoadAsync(ApplicationUser user)
         {
             ContactInfo userContactInfo = _db.ContactInfos.FirstOrDefault(contactInfo => contactInfo.UserId == user.Id);
-            UserBackUpInfo userBackUpInfo = _db.UserBackUpInfos.FirstOrDefault(backup => backup.UserId == user.Id);
 
             Input = new UserPersonalInfoInputModel()
             {
@@ -59,9 +57,9 @@ namespace AdminPanel.Areas.Admin.Pages.ManageUsers.Profile
             UserContactInfo = userContactInfo;
         }
 
-        public async Task OnGetAsync(string id, string returnUrl = null)
+        public async Task OnGetAsync(string id)
         {
-            returnUrl = ReturnUrl;
+            _ = ReturnUrl;
             if (ModelState.IsValid)
             {
                 ApplicationUser user = await _userManager.FindByIdAsync(id);
@@ -200,45 +198,6 @@ namespace AdminPanel.Areas.Admin.Pages.ManageUsers.Profile
                     contactInfo.ZipCode = Input.ZipCode;
                     _db.Entry(contactInfo).State = EntityState.Modified;
                 }
-
-
-                //if (userBackUpInfo == null)
-                //{
-                //    if (Input.BackupEmail != null && Input.BackupPhoneNumber != null)
-                //    {
-                //        UserBackUpInfo newUserBackupInfo = new()
-                //        {
-                //            Id = Guid.NewGuid().ToString(),
-                //            BackupEmail = Input.BackupEmail,
-                //            BackupPhoneNumber = Input.BackupPhoneNumber,
-                //            UserId = user.Id
-                //        };
-
-                //        await _db.AddAsync(newUserBackupInfo);
-                //    }
-                //    else
-                //    {
-                //        StatusMessage = "Error, to add a backup details you need to input both the backup number and email";
-                //    }
-                //}
-
-                //if (userBackUpInfo != null)
-                //{
-                //    var backupEmail = userBackUpInfo.BackupEmail;
-                //    var backupPhoneNumber = userBackUpInfo.BackupPhoneNumber;
-
-                //    if (Input.BackupEmail != backupEmail)
-                //    {
-                //        userBackUpInfo.BackupEmail = Input.BackupEmail;
-                //        _db.Entry(contactInfo).State = EntityState.Modified;
-                //    }
-
-                //    if (Input.BackupPhoneNumber != backupPhoneNumber)
-                //    {
-                //        userBackUpInfo.BackupPhoneNumber = Input.BackupPhoneNumber;
-                //        _db.Entry(contactInfo).State = EntityState.Modified;
-                //    }
-                //}
 
                 _ = await _userManager.UpdateAsync(user);
                 _ = await _db.SaveChangesAsync();

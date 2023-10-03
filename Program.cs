@@ -2,6 +2,8 @@ using AdminPanel.Data;
 using AdminPanel.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.HttpOverrides;
+using AdminPanel.Interface;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +21,13 @@ builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options => option
             .AddDefaultTokenProviders();
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddHttpClient();
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+});
 builder.Services.AddRazorPages();
+builder.Services.AddScoped<IAuditLog, AuditLog>();
 
 
 var app = builder.Build();
@@ -53,7 +61,7 @@ else
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-
+app.UseForwardedHeaders();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAuthentication();

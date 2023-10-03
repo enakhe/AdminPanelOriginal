@@ -9,6 +9,11 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Text.RegularExpressions;
+using DeviceDetectorNET;
+using UAParser;
+using System.Net.Http;
+using System.Net;
+using AdminPanel.Interface;
 
 namespace AdminPanel.Areas.Admin.Pages.User
 {
@@ -22,14 +27,16 @@ namespace AdminPanel.Areas.Admin.Pages.User
         private readonly ILogger<CreateModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly RoleManager<ApplicationRole> _roleManager;
-        public readonly ApplicationDbContext _db;
+        private readonly ApplicationDbContext _db;
+        private readonly IAuditLog _auditLog;
+        
 
         public CreateModel(
             UserManager<ApplicationUser> userManager,
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
             ILogger<CreateModel> logger,
-            IEmailSender emailSender, ApplicationDbContext db, RoleManager<ApplicationRole> roleManager)
+            IEmailSender emailSender, ApplicationDbContext db, RoleManager<ApplicationRole> roleManager, IAuditLog auditLog)
         {
             _userManager = userManager;
             _db = db;
@@ -39,6 +46,8 @@ namespace AdminPanel.Areas.Admin.Pages.User
             _logger = logger;
             _emailSender = emailSender;
             _roleManager = roleManager;
+            _auditLog = auditLog;
+            
         }
 
         [BindProperty]
@@ -78,6 +87,7 @@ namespace AdminPanel.Areas.Admin.Pages.User
             }
         }
 
+        [Obsolete]
         public async Task<IActionResult> OnPostAsync(List<ManageUserRolesViewModel> RoleList, string returnUrl = null)
         {
             returnUrl ??= Url.Page("/ManageUsers/Index");
@@ -155,11 +165,7 @@ namespace AdminPanel.Areas.Admin.Pages.User
                     };
                     await _db.LogsInfos.AddAsync(logsInfo);
 
-
                     // Assign Roles
-                    // var roles = await _userManager.GetRolesAsync(user);
-                    //var roleResult = await _userManager.AddToRolesAsync(user, RoleList.Where(x => x.Selected).Select(y => y.RoleName));
-
                     foreach (var selectedRoles in RoleList.Where(x => x.Selected))
                     {
                         var role = await _roleManager.FindByNameAsync(selectedRoles.RoleName);
@@ -176,7 +182,20 @@ namespace AdminPanel.Areas.Admin.Pages.User
                         await _db.UserRoles.AddAsync(userRole);
                     }
 
-                    await _userManager.UpdateAsync(user);
+                    var actionResult = await _userManager.UpdateAsync(user);
+                    if (actionResult.Succeeded)
+                    {
+                        
+                        AuditDeviceInfo auditDeviceInfo = new()
+                        {
+                            DeviceType = _auditLog.GetDeviceType(HttpContext),
+                            OperatingSystem = _auditLog.GetOperatingSystem(HttpContext),
+                            BrowserName = _auditLog.GetBrowserName(HttpContext),
+                            BrowserVersion = _auditLog.GetBrowserVersion(HttpContext),
+                            IPAddress = _auditLog.GetIpAddress(HttpContext),
+                        };
+                        _db.AuditDeviceInfo.Add(auditDeviceInfo);
+                    }
                     _db.SaveChanges();
                     StatusMessage = "Successfully created user profile";
                     return RedirectToPage("/ManageUsers/Index", new { area = "Admin", statusMessage = StatusMessage });

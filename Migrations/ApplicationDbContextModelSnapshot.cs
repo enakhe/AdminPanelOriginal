@@ -112,26 +112,6 @@ namespace AdminPanel.Migrations
                     b.ToTable("RoleCategories", "Identity");
                 });
 
-            modelBuilder.Entity("AdminPanel.Models.ApplicationRoleManager", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("RoleId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RoleId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("RoleManagers", "Identity");
-                });
-
             modelBuilder.Entity("AdminPanel.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
@@ -256,6 +236,96 @@ namespace AdminPanel.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("UserRoles", "Identity");
+                });
+
+            modelBuilder.Entity("AdminPanel.Models.AuditActionType", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AuditActionType", "Identity");
+                });
+
+            modelBuilder.Entity("AdminPanel.Models.AuditDeviceInfo", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("BrowserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BrowserVersion")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeviceID")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DeviceLocation")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DeviceOwner")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DeviceType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IPAddress")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OperatingSystem")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AuditDeviceInfo", "Identity");
+                });
+
+            modelBuilder.Entity("AdminPanel.Models.AuditLogging", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("AdminId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AuditActionTypeId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("AuditDeviceInfoId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeviceInfoId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TypeId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AuditActionTypeId");
+
+                    b.HasIndex("AuditDeviceInfoId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AuditLoggings", "Identity");
                 });
 
             modelBuilder.Entity("AdminPanel.Models.ContactInfo", b =>
@@ -466,21 +536,6 @@ namespace AdminPanel.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("AdminPanel.Models.ApplicationRoleManager", b =>
-                {
-                    b.HasOne("AdminPanel.Models.ApplicationRole", "Role")
-                        .WithMany("RoleManagers")
-                        .HasForeignKey("RoleId");
-
-                    b.HasOne("AdminPanel.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("Role");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("AdminPanel.Models.ApplicationUserRole", b =>
                 {
                     b.HasOne("AdminPanel.Models.ApplicationRole", "ApplicationRole")
@@ -506,6 +561,27 @@ namespace AdminPanel.Migrations
                     b.Navigation("ApplicationRole");
 
                     b.Navigation("ApplicationUser");
+                });
+
+            modelBuilder.Entity("AdminPanel.Models.AuditLogging", b =>
+                {
+                    b.HasOne("AdminPanel.Models.AuditActionType", "AuditActionType")
+                        .WithMany("AuditLoggings")
+                        .HasForeignKey("AuditActionTypeId");
+
+                    b.HasOne("AdminPanel.Models.AuditDeviceInfo", "AuditDeviceInfo")
+                        .WithMany("AuditLoggings")
+                        .HasForeignKey("AuditDeviceInfoId");
+
+                    b.HasOne("AdminPanel.Models.ApplicationUser", "User")
+                        .WithMany("AuditLoggings")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("AuditActionType");
+
+                    b.Navigation("AuditDeviceInfo");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("AdminPanel.Models.ContactInfo", b =>
@@ -590,12 +666,12 @@ namespace AdminPanel.Migrations
                     b.Navigation("JoinEntities");
 
                     b.Navigation("JoinEntitiesCategory");
-
-                    b.Navigation("RoleManagers");
                 });
 
             modelBuilder.Entity("AdminPanel.Models.ApplicationUser", b =>
                 {
+                    b.Navigation("AuditLoggings");
+
                     b.Navigation("BackUp");
 
                     b.Navigation("Contact");
@@ -607,6 +683,16 @@ namespace AdminPanel.Migrations
                     b.Navigation("Personalization");
 
                     b.Navigation("RoleManager");
+                });
+
+            modelBuilder.Entity("AdminPanel.Models.AuditActionType", b =>
+                {
+                    b.Navigation("AuditLoggings");
+                });
+
+            modelBuilder.Entity("AdminPanel.Models.AuditDeviceInfo", b =>
+                {
+                    b.Navigation("AuditLoggings");
                 });
 #pragma warning restore 612, 618
         }

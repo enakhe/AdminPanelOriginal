@@ -1,6 +1,7 @@
 #nullable disable
 
 using AdminPanel.Data;
+using AdminPanel.Interface;
 using AdminPanel.Models;
 using AdminPanel.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -17,12 +18,15 @@ namespace AdminPanel.Areas.Admin.Pages.ManageUsers.Profile
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly ApplicationDbContext _db;
+        private readonly IAuditLog _auditLog;
 
-        public RolesModel(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager, ApplicationDbContext db)
+
+        public RolesModel(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager, ApplicationDbContext db, IAuditLog auditLog)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _db = db;
+            _auditLog = auditLog;
         }
 
         public string ReturnUrl { get; set; }
@@ -128,6 +132,7 @@ namespace AdminPanel.Areas.Admin.Pages.ManageUsers.Profile
             if (ModelState.IsValid)
             {
                 var user = await _userManager.FindByIdAsync(id);
+                var admin = await _userManager.GetUserAsync(User);
                 if (user != null)
                 {
                     var roles = await _userManager.GetRolesAsync(user);
@@ -135,7 +140,42 @@ namespace AdminPanel.Areas.Admin.Pages.ManageUsers.Profile
 
                     if (!result.Succeeded)
                     {
-                        ModelState.AddModelError("", "Cannot remove user existing roles");
+                        StatusMessage = "Error, cannot remove user existing roles";
+
+                        // Add Audit Device Information
+                        var continent = await _auditLog.GetContinent();
+                        var countryName = await _auditLog.GetCountryName();
+                        var country = await _auditLog.GetCountry();
+                        var city = await _auditLog.GetCity();
+                        var state = await _auditLog.GetState();
+                        AuditDeviceInfo auditDeviceInfo = new()
+                        {
+                            DeviceType = _auditLog.GetDeviceType(HttpContext),
+                            OperatingSystem = _auditLog.GetOperatingSystem(HttpContext),
+                            BrowserName = _auditLog.GetBrowserName(HttpContext),
+                            BrowserVersion = _auditLog.GetBrowserVersion(HttpContext),
+                            IPAddress = _auditLog.GetIpAddress(HttpContext),
+                            DeviceContinent = continent,
+                            DeviceCountryName = countryName,
+                            DeviceCountry = country,
+                            DeviceCity = city,
+                            DeviceState = state,
+                        };
+                        await _db.AuditDeviceInfo.AddAsync(auditDeviceInfo);
+
+                        // Add Audit Loggin Information
+                        AuditLogging auditLogging = new()
+                        {
+                            AdminId = admin.Id,
+                            User = user,
+                            UserId = user.Id,
+                            DeviceInfoId = auditDeviceInfo.Id,
+                            AuditDeviceInfo = auditDeviceInfo,
+                            AuditActionType = "Post",
+                            StatusMessage = StatusMessage
+                        };
+                        await _db.AuditLoggings.AddAsync(auditLogging);
+                        await _db.SaveChangesAsync();
                         return Page();
                     }
 
@@ -153,12 +193,50 @@ namespace AdminPanel.Areas.Admin.Pages.ManageUsers.Profile
                         };
 
                         await _db.UserRoles.AddAsync(userRole);
+
+                        StatusMessage = $"Successfully assigned user to {role.Name} role";
+
+                        // Add Audit Device Information
+                        var continent = await _auditLog.GetContinent();
+                        var countryName = await _auditLog.GetCountryName();
+                        var country = await _auditLog.GetCountry();
+                        var city = await _auditLog.GetCity();
+                        var state = await _auditLog.GetState();
+                        AuditDeviceInfo auditDeviceInfo = new()
+                        {
+                            DeviceType = _auditLog.GetDeviceType(HttpContext),
+                            OperatingSystem = _auditLog.GetOperatingSystem(HttpContext),
+                            BrowserName = _auditLog.GetBrowserName(HttpContext),
+                            BrowserVersion = _auditLog.GetBrowserVersion(HttpContext),
+                            IPAddress = _auditLog.GetIpAddress(HttpContext),
+                            DeviceContinent = continent,
+                            DeviceCountryName = countryName,
+                            DeviceCountry = country,
+                            DeviceCity = city,
+                            DeviceState = state,
+                        };
+                        await _db.AuditDeviceInfo.AddAsync(auditDeviceInfo);
+
+                        // Add Audit Loggin Information
+                        AuditLogging auditLogging = new()
+                        {
+                            AdminId = admin.Id,
+                            User = user,
+                            UserId = user.Id,
+                            DeviceInfoId = auditDeviceInfo.Id,
+                            AuditDeviceInfo = auditDeviceInfo,
+                            AuditActionType = "Post",
+                            StatusMessage = StatusMessage
+                        };
+                        await _db.AuditLoggings.AddAsync(auditLogging);
+                        await _db.SaveChangesAsync();
                     }
 
                     await _userManager.UpdateAsync(user);
-                    _db.SaveChanges();
+                    await _db.SaveChangesAsync();
                     await LoadAsync(user);
-                    StatusMessage = "Successfully created user profile";
+
+                    StatusMessage = "Successfully assined role to user";
                     return Page();
                 }
             }

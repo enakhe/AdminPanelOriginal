@@ -96,6 +96,7 @@ namespace AdminPanel.Areas.Admin.Pages.User
                 LoadAsync();
 
                 var user = new ApplicationUser();
+                var admin = await _userManager.GetUserAsync(User);
                 user.Id = Guid.NewGuid().ToString();
                 user.UserName = Input.UserName;
 
@@ -182,24 +183,87 @@ namespace AdminPanel.Areas.Admin.Pages.User
                         await _db.UserRoles.AddAsync(userRole);
                     }
 
-                    var actionResult = await _userManager.UpdateAsync(user);
-                    if (actionResult.Succeeded)
-                    {
-                        
-                        AuditDeviceInfo auditDeviceInfo = new()
-                        {
-                            DeviceType = _auditLog.GetDeviceType(HttpContext),
-                            OperatingSystem = _auditLog.GetOperatingSystem(HttpContext),
-                            BrowserName = _auditLog.GetBrowserName(HttpContext),
-                            BrowserVersion = _auditLog.GetBrowserVersion(HttpContext),
-                            IPAddress = _auditLog.GetIpAddress(HttpContext),
-                        };
-                        _db.AuditDeviceInfo.Add(auditDeviceInfo);
-                    }
-                    _db.SaveChanges();
+                    await _userManager.UpdateAsync(user);
                     StatusMessage = "Successfully created user profile";
+
+                    // Add Audit Device Information
+                    var continent = await _auditLog.GetContinent();
+                    var countryName = await _auditLog.GetCountryName();
+                    var country = await _auditLog.GetCountry();
+                    var city = await _auditLog.GetCity();
+                    var state = await _auditLog.GetState();
+                    AuditDeviceInfo auditDeviceInfo = new()
+                    {
+                        DeviceType = _auditLog.GetDeviceType(HttpContext),
+                        OperatingSystem = _auditLog.GetOperatingSystem(HttpContext),
+                        BrowserName = _auditLog.GetBrowserName(HttpContext),
+                        BrowserVersion = _auditLog.GetBrowserVersion(HttpContext),
+                        IPAddress = _auditLog.GetIpAddress(HttpContext),
+                        DeviceContinent = continent,
+                        DeviceCountryName = countryName,
+                        DeviceCountry = country,
+                        DeviceCity = city,
+                        DeviceState = state,
+                    };
+                    await _db.AuditDeviceInfo.AddAsync(auditDeviceInfo);
+
+                    // Add Audit Loggin Information
+                    AuditLogging auditLogging = new()
+                    {
+                        AdminId = admin.Id,
+                        User = user,
+                        UserId = user.Id,
+                        DeviceInfoId = auditDeviceInfo.Id,
+                        AuditDeviceInfo = auditDeviceInfo,
+                        AuditActionType = "Post",
+                        StatusMessage = StatusMessage
+                    };
+                    await _db.AuditLoggings.AddAsync(auditLogging);
+
+                    await _db.SaveChangesAsync();
+
                     return RedirectToPage("/ManageUsers/Index", new { area = "Admin", statusMessage = StatusMessage });
+                } 
+                else
+                {
+                    StatusMessage = "Error, something unexpected happened";
+                    // Add Audit Device Information
+                    var continent = await _auditLog.GetContinent();
+                    var countryName = await _auditLog.GetCountryName();
+                    var country = await _auditLog.GetCountry();
+                    var city = await _auditLog.GetCity();
+                    var state = await _auditLog.GetState();
+                    AuditDeviceInfo auditDeviceInfo = new()
+                    {
+                        DeviceType = _auditLog.GetDeviceType(HttpContext),
+                        OperatingSystem = _auditLog.GetOperatingSystem(HttpContext),
+                        BrowserName = _auditLog.GetBrowserName(HttpContext),
+                        BrowserVersion = _auditLog.GetBrowserVersion(HttpContext),
+                        IPAddress = _auditLog.GetIpAddress(HttpContext),
+                        DeviceContinent = continent,
+                        DeviceCountryName = countryName,
+                        DeviceCountry = country,
+                        DeviceCity = city,
+                        DeviceState = state,
+                    };
+                    await _db.AuditDeviceInfo.AddAsync(auditDeviceInfo);
+
+                    // Add Audit Loggin Information
+                    AuditLogging auditLogging = new()
+                    {
+                        AdminId = admin.Id,
+                        User = user,
+                        UserId = user.Id,
+                        DeviceInfoId = auditDeviceInfo.Id,
+                        AuditDeviceInfo = auditDeviceInfo,
+                        AuditActionType = "Post",
+                        StatusMessage = StatusMessage
+                    };
+                    await _db.AuditLoggings.AddAsync(auditLogging);
+
+                    await _db.SaveChangesAsync();
                 }
+
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);

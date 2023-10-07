@@ -40,8 +40,11 @@ namespace AdminPanel.Migrations
                     BrowserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     BrowserVersion = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IPAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DeviceLocation = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DeviceOwner = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DeviceContinent = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DeviceCountryName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DeviceCountry = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DeviceState = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DeviceCity = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -101,13 +104,14 @@ namespace AdminPanel.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    AuditActionType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StatusMessage = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AdminId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    TypeId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DeviceInfoId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AuditActionTypeId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     AuditDeviceInfoId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    AuditActionTypeId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {

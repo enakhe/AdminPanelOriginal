@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="DeviceDetector.NET" Version="6.1.4" />
+    <PackageReference Include="IPinfo" Version="2.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="7.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.10" />

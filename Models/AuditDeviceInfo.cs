@@ -15,8 +15,11 @@ namespace AdminPanel.Models
         public string BrowserName { get; set; }
         public string BrowserVersion { get; set; }
         public string IPAddress { get; set; }
-        public string DeviceLocation { get; set; }
-        public string DeviceOwner { get; set; }
+        public string DeviceContinent { get; set; }
+        public string DeviceCountryName { get; set; }
+        public string DeviceCountry { get; set; }
+        public string DeviceState { get; set; }
+        public string DeviceCity { get; set; }
 
         public virtual ICollection<AuditLogging> AuditLoggings { get; set; }
 

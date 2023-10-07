@@ -1,4 +1,138 @@
 ﻿@page
 @model AdminPanel.Areas.Admin.Pages.ManageUsers.Profile.AuditLoggingModel
+@using AdminPanel.Models
 @{
+    Layout = "_Dashboard";
+    ViewData["Title"] = "Personal Info";
 }
+
+<div class="content-wrapper">
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Audit Log Info</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item"><a asp-area="Admin" asp-page="/ManageUsers/Profile/Index" asp-route-id="@Model.UserData.Id">Profile</a></li>
+                        <li class="breadcrumb-item active">@Model.UserData.FullName</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="content">
+        <div class="container-fluid">
+            <div class="profile-heading">
+                <div class="my-2">
+                    <div class="d-flex justify-content-center">
+                        <div class="col-md-6">
+                            <partial name="_StatusMessage" for="StatusMessage" />
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <div class="my-2">
+                            <div class="d-flex justify-content-center">
+
+                                <div class="my-2">
+                                    @{
+                                        if (Model.UserProfilePicture != null)
+                                        {
+                                            <img id="profilePicture"
+                                                 class="rounded-circle"
+                                                 src="data:image/*;base64,@(Convert.ToBase64String(Model.UserProfilePicture))" />
+                                        }
+                                        else
+                                        {
+                                            <img id="profilePicture" class="rounded-circle" src="~/img/user.png">
+                                        }
+                                    }
+                                </div>
+
+                            </div>
+                            <h4 class="my-1 text-center">User, @Model.UserData.FullName</h4>
+                            <p class="text-center">Edit and manage info about @Model.UserData.FirstName and preferences</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="center">
+                    <div class="profile-body">
+
+                        <div class="row align-items-center">
+                            <div class="col-sm-6 mb-3 mb-sm-0">
+                                <div class="heading">
+                                    <h4>Manage @Model.UserData.FirstName's personal information </h4>
+                                    <p>Personal info and options to manage it. You can make some of this info, like your contact details, visible to others so they can reach you easily. You can also see a summary of your profiles.</p>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6 d-flex justify-content-center mb-3 mb-sm-0">
+                                <img src="~/img/audit.svg" class="img-fluid w-50" alt="...">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="personal-info my-4">
+                            <div class="border rounded border-3 p-3">
+                                <h5 class="fw-bold">Audit Log Information </h5>
+                                <div class="accordion accordion-flush" id="accordionFlushExample">
+                                    @{
+                                        if (Model.AuditLoggings != null)
+                                        {
+                                            foreach (var auditLogginGroup in Model.AuditGroupLoggings)
+                                            {
+                                                <h6 class="my-3">Date: @auditLogginGroup.Key.ToString("dddd MMM dd, yyyy")</h6>
+
+                                                foreach (var auditLoggin in auditLogginGroup)
+                                                {
+                                                    <div class="accordion-item">
+                                                        <h2 class="accordion-header">
+                                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-@auditLoggin.Id" aria-expanded="false" aria-controls="flush-@auditLoggin.Id">
+                                                                <span>@auditLoggin.StatusMessage (@auditLoggin.AuditActionType) </span>
+
+                                                                @if (@auditLoggin.StatusMessage.StartsWith("Error"))
+                                                                {
+                                                                    <span class="badge rounded-pill text-bg-danger mx-3">Error</span>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <span class="badge rounded-pill text-bg-success mx-3">Success</span>
+                                                                }
+
+                                                            </button>
+                                                        </h2>
+                                                        <div id="flush-@auditLoggin.Id" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                                                            <ul class="list-group my-4">
+                                                                <li class="list-group-item"><span class="fw-semibold">Device ID</span>: @auditLoggin.AuditDeviceInfo.DeviceID</li>
+                                                                <li class="list-group-item"><span class="fw-semibold">Device type</span>: @auditLoggin.AuditDeviceInfo.DeviceType</li>
+                                                                <li class="list-group-item"><span class="fw-semibold">Operating system</span>: @auditLoggin.AuditDeviceInfo.OperatingSystem</li>
+                                                                <li class="list-group-item"><span class="fw-semibold">Browser</span>: @auditLoggin.AuditDeviceInfo.BrowserName version (@auditLoggin.AuditDeviceInfo.BrowserVersion)</li>
+                                                                <li class="list-group-item"><span class="fw-semibold">IP Address</span>: @auditLoggin.AuditDeviceInfo.IPAddress</li>
+                                                                <li class="list-group-item"><span class="fw-semibold">Continent</span>: @auditLoggin.AuditDeviceInfo.DeviceContinent</li>
+                                                                <li class="list-group-item"><span class="fw-semibold">Country</span>: @auditLoggin.AuditDeviceInfo.DeviceCountry (@auditLoggin.AuditDeviceInfo.DeviceCountryName)</li>
+                                                                <li class="list-group-item"><span class="fw-semibold">State</span>: @auditLoggin.AuditDeviceInfo.DeviceState</li>
+                                                                <li class="list-group-item"><span class="fw-semibold">City</span>: @auditLoggin.AuditDeviceInfo.DeviceCity</li>
+                                                                <li class="list-group-item"><span class="fw-semibold">Time stamp</span>: @auditLoggin.DateCreated.ToString("ddd, hh:mm tt")</li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                }
+                                                
+                                            }
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

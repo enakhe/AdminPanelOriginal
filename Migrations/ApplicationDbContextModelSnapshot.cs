@@ -268,13 +268,22 @@ namespace AdminPanel.Migrations
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("DeviceCity")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DeviceContinent")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DeviceCountry")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DeviceCountryName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("DeviceID")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("DeviceLocation")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DeviceOwner")
+                    b.Property<string>("DeviceState")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DeviceType")
@@ -299,6 +308,9 @@ namespace AdminPanel.Migrations
                     b.Property<string>("AdminId")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("AuditActionType")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("AuditActionTypeId")
                         .HasColumnType("nvarchar(450)");
 
@@ -311,7 +323,7 @@ namespace AdminPanel.Migrations
                     b.Property<string>("DeviceInfoId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TypeId")
+                    b.Property<string>("StatusMessage")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
@@ -565,7 +577,7 @@ namespace AdminPanel.Migrations
 
             modelBuilder.Entity("AdminPanel.Models.AuditLogging", b =>
                 {
-                    b.HasOne("AdminPanel.Models.AuditActionType", "AuditActionType")
+                    b.HasOne("AdminPanel.Models.AuditActionType", null)
                         .WithMany("AuditLoggings")
                         .HasForeignKey("AuditActionTypeId");
 
@@ -576,8 +588,6 @@ namespace AdminPanel.Migrations
                     b.HasOne("AdminPanel.Models.ApplicationUser", "User")
                         .WithMany("AuditLoggings")
                         .HasForeignKey("UserId");
-
-                    b.Navigation("AuditActionType");
 
                     b.Navigation("AuditDeviceInfo");
 

@@ -3,7 +3,10 @@ using AdminPanel.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Http;
 using AdminPanel.Interface;
+using Microsoft.Extensions.DependencyInjection;
+using DeviceDetectorNET.Parser.Device;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +29,8 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
     options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
 });
+
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddRazorPages();
 builder.Services.AddScoped<IAuditLog, AuditLog>();
 

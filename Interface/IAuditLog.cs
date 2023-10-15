@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net.Http;
 using IPinfo;
 using IPinfo.Models;
+using AdminPanel.Models;
+using AdminPanel.Data;
 
 namespace AdminPanel.Interface
 {
@@ -23,11 +25,18 @@ namespace AdminPanel.Interface
         public Task<string> GetCountry();
         public Task<string> GetCity();
         public Task<string> GetState();
+        public Task AddAudit(HttpContext context, ApplicationUser admin, ApplicationUser user, string StatusMessage);
 
     }
 
     public class AuditLog : IAuditLog
     {
+        private readonly ApplicationDbContext _db;
+
+        public AuditLog(ApplicationDbContext db)
+        {
+            _db = db;
+        }
 
         public string GetDeviceType(HttpContext context)
         {
@@ -140,6 +149,46 @@ namespace AdminPanel.Interface
             IPResponse ipResponse = await client.IPApi.GetDetailsAsync(ip);
 
             return ipResponse.Region;
+        }
+
+        [Obsolete]
+        public async Task AddAudit(HttpContext context, ApplicationUser admin, ApplicationUser user, string StatusMessage)
+        {
+            // Add Audit Device Information
+            var continent = await GetContinent();
+            var countryName = await GetCountryName();
+            var country = await GetCountry();
+            var city = await GetCity();
+            var state = await GetState();
+
+            AuditDeviceInfo auditDeviceInfo = new()
+            {
+                DeviceType = GetDeviceType(context),
+                OperatingSystem = GetOperatingSystem(context),
+                BrowserName = GetBrowserName(context),
+                BrowserVersion = GetBrowserVersion(context),
+                IPAddress = GetIpAddress(context),
+                DeviceContinent = continent,
+                DeviceCountryName = countryName,
+                DeviceCountry = country,
+                DeviceCity = city,
+                DeviceState = state,
+            };
+            await _db.AuditDeviceInfo.AddAsync(auditDeviceInfo);
+
+            // Add Audit Loggin Information
+            AuditLogging auditLogging = new()
+            {
+                AdminId = admin.Id,
+                User = user,
+                UserId = user.Id,
+                DeviceInfoId = auditDeviceInfo.Id,
+                AuditDeviceInfo = auditDeviceInfo,
+                AuditActionType = "Post",
+                StatusMessage = StatusMessage
+            };
+            await _db.AuditLoggings.AddAsync(auditLogging);
+            await _db.SaveChangesAsync();
         }
     }
 }

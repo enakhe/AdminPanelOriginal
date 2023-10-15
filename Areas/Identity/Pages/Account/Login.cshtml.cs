@@ -69,10 +69,17 @@ namespace AdminPanel.Areas.Identity.Pages.Account
                 var userName = Input?.Username;
                 var user = await _userManager.FindByNameAsync(Input.Username);
                 var admin = await _db.Users.FirstOrDefaultAsync(user => user.UserName == "SuperAdmin");
+
                 if (user != null)
                 {
                     userName = user.UserName;
+                } 
+                else
+                {
+                    StatusMessage = "Error, user with the username does not exit";
+                    return Page();
                 }
+
                 var result = await _signInManager.PasswordSignInAsync(Input.Username, Input.Password, Input.RememberMe, lockoutOnFailure: false);
 
                 if (result.Succeeded)
@@ -92,123 +99,23 @@ namespace AdminPanel.Areas.Identity.Pages.Account
                             if (personalizationInfo.IsAuthorized == false)
                             {
                                 StatusMessage = "Error, you are not authorized to have access";
-
-                                // Add Audit Device Information
-                                var continent = await _auditLog.GetContinent();
-                                var countryName = await _auditLog.GetCountryName();
-                                var country = await _auditLog.GetCountry();
-                                var city = await _auditLog.GetCity();
-                                var state = await _auditLog.GetState();
-                                AuditDeviceInfo auditDeviceInfo = new()
-                                {
-                                    DeviceType = _auditLog.GetDeviceType(HttpContext),
-                                    OperatingSystem = _auditLog.GetOperatingSystem(HttpContext),
-                                    BrowserName = _auditLog.GetBrowserName(HttpContext),
-                                    BrowserVersion = _auditLog.GetBrowserVersion(HttpContext),
-                                    IPAddress = _auditLog.GetIpAddress(HttpContext),
-                                    DeviceContinent = continent,
-                                    DeviceCountryName = countryName,
-                                    DeviceCountry = country,
-                                    DeviceCity = city,
-                                    DeviceState = state,
-                                };
-                                await _db.AuditDeviceInfo.AddAsync(auditDeviceInfo);
-
-                                // Add Audit Loggin Information
-                                AuditLogging auditLogging = new()
-                                {
-                                    AdminId = admin.Id,
-                                    User = user,
-                                    UserId = user.Id,
-                                    DeviceInfoId = auditDeviceInfo.Id,
-                                    AuditDeviceInfo = auditDeviceInfo,
-                                    AuditActionType = "Post",
-                                    StatusMessage = StatusMessage
-                                };
-                                await _db.AuditLoggings.AddAsync(auditLogging);
-                                await _db.SaveChangesAsync();
+                                await _auditLog.AddAudit(HttpContext, admin, user, StatusMessage);
                                 await _signInManager.SignOutAsync();
                                 return Page();
                             }
                             else
                             {
                                 StatusMessage = "Successfully logged in";
-
-                                // Add Audit Device Information
-                                var continent = await _auditLog.GetContinent();
-                                var countryName = await _auditLog.GetCountryName();
-                                var country = await _auditLog.GetCountry();
-                                var city = await _auditLog.GetCity();
-                                var state = await _auditLog.GetState();
-                                AuditDeviceInfo auditDeviceInfo = new()
-                                {
-                                    DeviceType = _auditLog.GetDeviceType(HttpContext),
-                                    OperatingSystem = _auditLog.GetOperatingSystem(HttpContext),
-                                    BrowserName = _auditLog.GetBrowserName(HttpContext),
-                                    BrowserVersion = _auditLog.GetBrowserVersion(HttpContext),
-                                    IPAddress = _auditLog.GetIpAddress(HttpContext),
-                                    DeviceContinent = continent,
-                                    DeviceCountryName = countryName,
-                                    DeviceCountry = country,
-                                    DeviceCity = city,
-                                    DeviceState = state,
-                                };
-                                await _db.AuditDeviceInfo.AddAsync(auditDeviceInfo);
-
-                                // Add Audit Loggin Information
-                                AuditLogging auditLogging = new()
-                                {
-                                    AdminId = admin.Id,
-                                    User = user,
-                                    UserId = user.Id,
-                                    DeviceInfoId = auditDeviceInfo.Id,
-                                    AuditDeviceInfo = auditDeviceInfo,
-                                    AuditActionType = "Post",
-                                    StatusMessage = StatusMessage
-                                };
-                                await _db.AuditLoggings.AddAsync(auditLogging);
-                                await _db.SaveChangesAsync();
+                                await _auditLog.AddAudit(HttpContext, admin, user, StatusMessage);
                                 return RedirectToPage("/Dashboard/Index", new { area = "User" });
                             }
                         }
                         else
                         {
                             StatusMessage = "Error, you are not authorized to have access";
-                            await _signInManager.SignOutAsync();
-                            // Add Audit Device Information
-                            var continent = await _auditLog.GetContinent();
-                            var countryName = await _auditLog.GetCountryName();
-                            var country = await _auditLog.GetCountry();
-                            var city = await _auditLog.GetCity();
-                            var state = await _auditLog.GetState();
-                            AuditDeviceInfo auditDeviceInfo = new()
-                            {
-                                DeviceType = _auditLog.GetDeviceType(HttpContext),
-                                OperatingSystem = _auditLog.GetOperatingSystem(HttpContext),
-                                BrowserName = _auditLog.GetBrowserName(HttpContext),
-                                BrowserVersion = _auditLog.GetBrowserVersion(HttpContext),
-                                IPAddress = _auditLog.GetIpAddress(HttpContext),
-                                DeviceContinent = continent,
-                                DeviceCountryName = countryName,
-                                DeviceCountry = country,
-                                DeviceCity = city,
-                                DeviceState = state,
-                            };
-                            await _db.AuditDeviceInfo.AddAsync(auditDeviceInfo);
-
-                            // Add Audit Loggin Information
-                            AuditLogging auditLogging = new()
-                            {
-                                AdminId = admin.Id,
-                                User = user,
-                                UserId = user.Id,
-                                DeviceInfoId = auditDeviceInfo.Id,
-                                AuditDeviceInfo = auditDeviceInfo,
-                                AuditActionType = "Post",
-                                StatusMessage = StatusMessage
-                            };
-                            await _db.AuditLoggings.AddAsync(auditLogging);
+                            _auditLog.AddAudit(HttpContext, admin, user, StatusMessage); 
                             await _db.SaveChangesAsync();
+                            await _signInManager.SignOutAsync();
                             return Page();
                         }
                     }
@@ -220,7 +127,7 @@ namespace AdminPanel.Areas.Identity.Pages.Account
                 }
                 else
                 {
-                    StatusMessage = "Error, Invalid login attempt";
+                    StatusMessage = "Error, incorrect password";
                     return Page();
                 }
             }

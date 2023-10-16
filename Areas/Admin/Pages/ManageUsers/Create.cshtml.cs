@@ -186,42 +186,8 @@ namespace AdminPanel.Areas.Admin.Pages.User
                     await _userManager.UpdateAsync(user);
                     StatusMessage = "Successfully created user profile";
 
-                    // Add Audit Device Information
-                    var continent = await _auditLog.GetContinent();
-                    var countryName = await _auditLog.GetCountryName();
-                    var country = await _auditLog.GetCountry();
-                    var city = await _auditLog.GetCity();
-                    var state = await _auditLog.GetState();
-                    AuditDeviceInfo auditDeviceInfo = new()
-                    {
-                        DeviceType = _auditLog.GetDeviceType(HttpContext),
-                        OperatingSystem = _auditLog.GetOperatingSystem(HttpContext),
-                        BrowserName = _auditLog.GetBrowserName(HttpContext),
-                        BrowserVersion = _auditLog.GetBrowserVersion(HttpContext),
-                        IPAddress = _auditLog.GetIpAddress(HttpContext),
-                        DeviceContinent = continent,
-                        DeviceCountryName = countryName,
-                        DeviceCountry = country,
-                        DeviceCity = city,
-                        DeviceState = state,
-                    };
-                    await _db.AuditDeviceInfo.AddAsync(auditDeviceInfo);
-
-                    // Add Audit Loggin Information
-                    AuditLogging auditLogging = new()
-                    {
-                        AdminId = admin.Id,
-                        User = user,
-                        UserId = user.Id,
-                        DeviceInfoId = auditDeviceInfo.Id,
-                        AuditDeviceInfo = auditDeviceInfo,
-                        AuditActionType = "Post",
-                        StatusMessage = StatusMessage
-                    };
-                    await _db.AuditLoggings.AddAsync(auditLogging);
-
+                    await _auditLog.AddAudit(HttpContext, admin, user, StatusMessage);
                     await _db.SaveChangesAsync();
-
                     return RedirectToPage("/ManageUsers/Index", new { area = "Admin", statusMessage = StatusMessage });
                 } 
                 else

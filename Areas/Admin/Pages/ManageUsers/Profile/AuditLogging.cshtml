@@ -3,7 +3,7 @@
 @using AdminPanel.Models
 @{
     Layout = "_Dashboard";
-    ViewData["Title"] = "Personal Info";
+    ViewData["Title"] = "Audit Logging";
 }
 
 <div class="content-wrapper">
@@ -77,9 +77,9 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <div class="personal-info my-4">
-                            <div class="border rounded border-3 p-3">
+                            <div class="border shadow-sm border-success rounded-3 border-opacity-75 border-3 p-3">
                                 <h5 class="fw-bold">Audit Log Information </h5>
                                 <div class="accordion accordion-flush" id="accordionFlushExample">
                                     @{
@@ -88,9 +88,10 @@
                                             foreach (var auditLogginGroup in Model.AuditGroupLoggings)
                                             {
                                                 <h6 class="my-3">Date: @auditLogginGroup.Key.ToString("dddd MMM dd, yyyy")</h6>
+                                                <div class="mb-3">
+                                                    @foreach (var auditLoggin in auditLogginGroup)
+                                                    {
 
-                                                foreach (var auditLoggin in auditLogginGroup)
-                                                {
                                                     <div class="accordion-item">
                                                         <h2 class="accordion-header">
                                                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-@auditLoggin.Id" aria-expanded="false" aria-controls="flush-@auditLoggin.Id">
@@ -108,22 +109,30 @@
                                                             </button>
                                                         </h2>
                                                         <div id="flush-@auditLoggin.Id" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-                                                            <ul class="list-group my-4">
-                                                                <li class="list-group-item"><span class="fw-semibold">Device ID</span>: @auditLoggin.AuditDeviceInfo.DeviceID</li>
-                                                                <li class="list-group-item"><span class="fw-semibold">Device type</span>: @auditLoggin.AuditDeviceInfo.DeviceType</li>
-                                                                <li class="list-group-item"><span class="fw-semibold">Operating system</span>: @auditLoggin.AuditDeviceInfo.OperatingSystem</li>
-                                                                <li class="list-group-item"><span class="fw-semibold">Browser</span>: @auditLoggin.AuditDeviceInfo.BrowserName version (@auditLoggin.AuditDeviceInfo.BrowserVersion)</li>
-                                                                <li class="list-group-item"><span class="fw-semibold">IP Address</span>: @auditLoggin.AuditDeviceInfo.IPAddress</li>
-                                                                <li class="list-group-item"><span class="fw-semibold">Continent</span>: @auditLoggin.AuditDeviceInfo.DeviceContinent</li>
-                                                                <li class="list-group-item"><span class="fw-semibold">Country</span>: @auditLoggin.AuditDeviceInfo.DeviceCountry (@auditLoggin.AuditDeviceInfo.DeviceCountryName)</li>
-                                                                <li class="list-group-item"><span class="fw-semibold">State</span>: @auditLoggin.AuditDeviceInfo.DeviceState</li>
-                                                                <li class="list-group-item"><span class="fw-semibold">City</span>: @auditLoggin.AuditDeviceInfo.DeviceCity</li>
-                                                                <li class="list-group-item"><span class="fw-semibold">Time stamp</span>: @auditLoggin.DateCreated.ToString("ddd, hh:mm tt")</li>
-                                                            </ul>
+                                                            <div class="row align-items-center">
+                                                                <ul class="list-group my-4 col-md-6">
+                                                                    <li class="list-group-item"><span class="fw-semibold">Device ID</span>: @auditLoggin.AuditDeviceInfo.DeviceID</li>
+                                                                    <li class="list-group-item"><span class="fw-semibold">Device type</span>: @auditLoggin.AuditDeviceInfo.DeviceType</li>
+                                                                    <li class="list-group-item"><span class="fw-semibold">Operating system</span>: @auditLoggin.AuditDeviceInfo.OperatingSystem</li>
+                                                                    <li class="list-group-item"><span class="fw-semibold">Browser</span>: @auditLoggin.AuditDeviceInfo.BrowserName version (@auditLoggin.AuditDeviceInfo.BrowserVersion)</li>
+                                                                    <li class="list-group-item"><span class="fw-semibold">IP Address</span>: @auditLoggin.AuditDeviceInfo.IPAddress</li>
+                                                                </ul>
+                                                                <ul class="list-group my-4 col-md-6">
+                                                                    <li class="list-group-item"><span class="fw-semibold">Continent</span>: @auditLoggin.AuditDeviceInfo.DeviceContinent</li>
+                                                                    <li class="list-group-item"><span class="fw-semibold">Country</span>: @auditLoggin.AuditDeviceInfo.DeviceCountry (@auditLoggin.AuditDeviceInfo.DeviceCountryName)</li>
+                                                                    <li class="list-group-item"><span class="fw-semibold">State</span>: @auditLoggin.AuditDeviceInfo.DeviceState</li>
+                                                                    <li class="list-group-item"><span class="fw-semibold">City</span>: @auditLoggin.AuditDeviceInfo.DeviceCity</li>
+                                                                    <li class="list-group-item"><span class="fw-semibold">Time stamp</span>: @auditLoggin.DateCreated.ToString("ddd, hh:mm tt")</li>
+                                                                </ul>
+                                                            </div>
+
                                                         </div>
                                                     </div>
-                                                }
-                                                
+                                                    }
+                                                </div>
+
+
+
                                             }
                                         }
                                     }

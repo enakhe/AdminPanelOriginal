@@ -2,6 +2,7 @@
 
 using AdminPanel.Data;
 using AdminPanel.InputModel;
+using AdminPanel.Interface;
 using AdminPanel.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -17,11 +18,14 @@ namespace AdminPanel.Areas.Admin.Pages.ManageUsers.Profile
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _db;
+        private readonly IAuditLog _auditLog;
 
-        public PersonalInfoModel(UserManager<ApplicationUser> userManager, ApplicationDbContext db)
+
+        public PersonalInfoModel(UserManager<ApplicationUser> userManager, ApplicationDbContext db, IAuditLog auditLog)
         {
             _userManager = userManager;
             _db = db;
+            _auditLog = auditLog;
         }
 
         [BindProperty]
@@ -77,6 +81,7 @@ namespace AdminPanel.Areas.Admin.Pages.ManageUsers.Profile
         public async Task<IActionResult> OnPostAsync(UserPersonalInfoInputModel Input, string id, string returnUrl = null)
         {
             returnUrl = ReturnUrl;
+            var admin = await _db.Users.FirstOrDefaultAsync(user => user.UserName == "SuperAdmin");
 
             ApplicationUser user = await _userManager.FindByIdAsync(id);
 
@@ -143,6 +148,7 @@ namespace AdminPanel.Areas.Admin.Pages.ManageUsers.Profile
                     if (!setEmail.Succeeded)
                     {
                         StatusMessage = "Unexpected error when trying to set email address.";
+                        await _auditLog.AddAudit(HttpContext, admin, user, StatusMessage);
                         return RedirectToPage();
                     }
                 }
@@ -152,7 +158,8 @@ namespace AdminPanel.Areas.Admin.Pages.ManageUsers.Profile
                     IdentityResult setPhoneNumber = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
                     if (!setPhoneNumber.Succeeded)
                     {
-                        StatusMessage = "Unexpected error when trying to set email address.";
+                        StatusMessage = "Unexpected error when trying to set phone number";
+                        await _auditLog.AddAudit(HttpContext, admin, user, StatusMessage);
                         return RedirectToPage();
                     }
                     _ = await _userManager.UpdateAsync(user);
@@ -170,7 +177,8 @@ namespace AdminPanel.Areas.Admin.Pages.ManageUsers.Profile
                         }
                         else
                         {
-                            ModelState.AddModelError("File", "The file is too large");
+                            StatusMessage = "The file is too large";
+                            await _auditLog.AddAudit(HttpContext, admin, user, StatusMessage);
                         }
                     }
                 }
@@ -202,6 +210,8 @@ namespace AdminPanel.Areas.Admin.Pages.ManageUsers.Profile
                 _ = await _userManager.UpdateAsync(user);
                 _ = await _db.SaveChangesAsync();
                 StatusMessage = "User profile has been updated";
+                await _auditLog.AddAudit(HttpContext, admin, user, StatusMessage);
+
                 LoadAsync(user);
                 return Page();
             }

@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Areas\Admin\Pages\ManageUsers\Profile\PasswordSecurity.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="DeviceDetector.NET" Version="6.1.4" />
     <PackageReference Include="IPinfo" Version="2.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="7.0.10" />
@@ -23,5 +27,4 @@
   <ItemGroup>
     <Folder Include="Areas\Admin\Controllers\" />
   </ItemGroup>
-
 </Project>

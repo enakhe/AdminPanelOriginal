@@ -80,9 +80,10 @@
                         <div class="personal-info my-4">
                             <div class="border shadow-sm border-success rounded-3 border-opacity-75 border-3 p-3">
                                 <h5 class="fw-bold">Password & Security</h5>
-                                <form id="updateForm needs-validation" class="my-5" asp-area="Admin" asp-page="/ManageUsers/Profile/Security" asp-route-id="@Model.UserData.Id" enctype="multipart/form-data" method="post">
+                                <form id="updateForm needs-validation" class="my-5" asp-area="Admin" asp-page="/ManageUsers/Profile/Security" asp-route-id="@Model.UserData.Id">
+
                                     <div class="form-floating mb-3">
-                                        <input name="password" id="password" class="form-control shadow-none col-md-6" aria-required="true" placeholder="Enter new password" />
+                                        <input name="newPassword" id="newPassword" type="password" class="form-control shadow-none col-md-6" aria-required="true" placeholder="Enter new password" />
                                         <label class="form-label">New Password</label>
                                     </div>
 

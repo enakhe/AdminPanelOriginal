@@ -40,31 +40,38 @@
             </div>
             <span asp-validation-for="Input.Password" class="text-danger"></span>
 
-            <div class="icheck-primary shadow-none">
-                <input type="checkbox" class="shadow-none" id="remember" asp-for="Input.RememberMe">
-                <label for="remember" asp-for="Input.RememberMe">
-                    Remember Me
-                </label>
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <div class="icheck-primary shadow-none">
+                        <input type="checkbox" class="shadow-none" id="remember" asp-for="Input.RememberMe">
+                        <label for="remember" asp-for="Input.RememberMe">
+                            <small>Remember me</small>
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-6 float-end">
+                    <p class="mb-1">
+                        <small class="float-end">
+                            <a id="forgot-password" asp-page="./ForgotPassword" class="text-center">forgot password?</a>
+                        </small>
+                    </p>
+                </div>
             </div>
+            
 
             <button id="login-submit" type="submit" class="btn btn-success shadow-none w-100 btn-block">Sign In</button>
         </form>
+    </div>
+</div>
 
-        <div class="text-center my-2">
-            <p class="mb-1">
-                <a id="forgot-password" asp-page="./ForgotPassword" class="text-center">I forgot my password</a>
-            </p>
-            <p class="mb-0">
-                <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="text-center">Register</a>
-            </p>
-            <p class="mb-0">
-                <a id="resend-confirmation" asp-page="./ResendEmailConfirmation" class="text-center">
-                    Resend email
-                    confirmation
-                </a>
-            </p>
-        </div>
-
+<div class="card my-3">
+    <div class="text-center my-2">
+        <p class="mb-0">
+            New to Admin Panel?
+        </p>
+        <p class="mb-0">
+            <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="text-center">Create an account</a>
+        </p>
     </div>
 </div>
 

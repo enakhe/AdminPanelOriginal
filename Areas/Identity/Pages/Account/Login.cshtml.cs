@@ -113,7 +113,7 @@ namespace AdminPanel.Areas.Identity.Pages.Account
                         else
                         {
                             StatusMessage = "Error, you are not authorized to have access";
-                            _auditLog.AddAudit(HttpContext, admin, user, StatusMessage); 
+                            await _auditLog.AddAudit(HttpContext, admin, user, StatusMessage); 
                             await _db.SaveChangesAsync();
                             await _signInManager.SignOutAsync();
                             return Page();

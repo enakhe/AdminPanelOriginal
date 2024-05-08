@@ -40,18 +40,39 @@ namespace AdminPanel.Areas.Admin.Pages.ManageUsers.Profile
         public byte[] UserProfilePicture { get; set; }
         public string Code { get; set; }
 
-        public async void LoadAsync(ApplicationUser user)
+        public void LoadAsync(ApplicationUser user)
         {
-            
+            UserData = user;
+            UserProfilePicture = user.ProfilePicture;
         }
 
         public async Task OnGetAsync(string id)
         {
-            
+            _ = ReturnUrl;
+            if (ModelState.IsValid)
+            {
+                ApplicationUser user = await _userManager.FindByIdAsync(id);
+                if (user != null)
+                {
+                    LoadAsync(user);
+                }
+            }
+            else
+            {
+                StatusMessage = "Error, something unexpected happened";
+            }
         }
 
-        public async Task<IActionResult> OnPostAsync(string id, string newPassword)
+        public async Task<IActionResult> OnPostAsync(ApplicationUser user, string newPassword)
         {
+            _ = ReturnUrl;
+            ApplicationUser updatedUser = await _userManager.FindByIdAsync(user.Id);
+
+            await _userManager.ChangePasswordAsync(updatedUser, "DummyUser$01", newPassword);
+            await _userManager.UpdateAsync(updatedUser);
+            StatusMessage = "Successfully created user profile";
+
+            LoadAsync(user);
             return Page();
         }
     }

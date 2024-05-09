@@ -83,9 +83,15 @@
                                 <form id="updateForm needs-validation" enctype="multipart/form-data" method="post">
 
                                     <div class="form-floating mb-3">
-                                        <input name="newPassword" id="newPassword" type="password" class="form-control shadow-none col-md-6" aria-required="true" placeholder="Enter new password" />
+                                        <input name="Id" id="Id" type="text" value="@Model.UserData.Id" class="form-control shadow-none col-md-6" aria-required="true" placeholder="Id" disabled hidden />
+                                    </div>
+
+
+                                    <div class="form-floating mb-3">
+                                        <input name="newPassword" id="newPassword" type="text" class="form-control shadow-none col-md-6" aria-required="true" placeholder="Enter new password" />
                                         <label class="form-label">New Password</label>
                                     </div>
+
 
                                     <div class="center">
                                         <div class="save-button my-3">

@@ -12,6 +12,6 @@ namespace AdminPanel.Models
         public string DeviceInfoId { get; set; }
         public virtual ApplicationUser User { get; set; }
         public virtual AuditDeviceInfo AuditDeviceInfo { get; set; }
-        public DateTime DateCreated { get; set; } = DateTime.UtcNow;
+        public DateTime DateCreated { get; set; } = DateTime.Now;
     }
 }

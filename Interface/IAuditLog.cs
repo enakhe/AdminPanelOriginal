@@ -26,7 +26,6 @@ namespace AdminPanel.Interface
         public Task<string> GetCity();
         public Task<string> GetState();
         public Task AddAudit(HttpContext context, ApplicationUser admin, ApplicationUser user, string StatusMessage);
-
     }
 
     public class AuditLog : IAuditLog

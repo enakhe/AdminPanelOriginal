@@ -51,7 +51,7 @@ namespace AdminPanel.Areas.Admin.Pages.User
         }
 
         [BindProperty]
-        public RegisterInputModel Input { get; set; }
+        public CreateInputModel Input { get; set; }
 
         public string ReturnUrl { get; set; }
 
@@ -233,6 +233,7 @@ namespace AdminPanel.Areas.Admin.Pages.User
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
+                    StatusMessage = "Error, " + error.Description;
                 }
             }
             return Page();

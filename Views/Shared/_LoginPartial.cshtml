@@ -3,11 +3,11 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 @{
-    #nullable disable
+#nullable disable
 }
 <ul class="navbar-nav">
-@if (SignInManager.IsSignedIn(User))
-{
+    @if (SignInManager.IsSignedIn(User))
+    {
         <li class="dropdown nav-item">
             <a class="nav-link text-dark dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">
                 @{
@@ -44,21 +44,23 @@
                 </li>
             </ul>
         </li>
-    <li class="nav-item">
-        <form  class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-            <button  type="submit" class="nav-link btn shadow-none btn-link text-dark">Logout</button>
-        </form>
-    </li>
-}
-else
-{
-    @* <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register</a>
-    </li> *@
-    <li class="nav-item">
-            <button class="btn px-4 py-0 btn-success text-light">
-                <a class="nav-link text-light" asp-area="Identity" asp-page="/Account/Login">Login</a>
-            </button>
-    </li>
-}
+        <li class="nav-item">
+            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                <button type="submit" class="nav-link btn shadow-none btn-link text-dark">Logout</button>
+            </form>
+        </li>
+    }
+    else
+    {
+        <li class="">
+            <a class="btn px-5 py-2 btn-success text-light" asp-area="Identity" asp-page="/Account/Register">
+                Register
+            </a>
+        </li>
+        <li class="ml-3">
+            <a class="btn px-5 py-2 btn-success text-light" asp-area="Identity" asp-page="/Account/Login">
+                Login
+            </a>
+        </li>
+    }
 </ul>

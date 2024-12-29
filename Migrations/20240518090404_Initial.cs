@@ -188,6 +188,7 @@ namespace AdminPanel.Migrations
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     IsAuthorized = table.Column<bool>(type: "bit", nullable: false),
+                    isDisabled = table.Column<bool>(type: "bit", nullable: false),
                     IsOnline = table.Column<bool>(type: "bit", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },

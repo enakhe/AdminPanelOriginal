@@ -72,7 +72,9 @@ namespace AdminPanel.Areas.Admin.Pages.ManageUsers.Profile
             ApplicationUser admin = await _userManager.GetUserAsync(User);
             ApplicationUser user = await _userManager.FindByIdAsync(Id);
 
-            var result = await _userManager.ChangePasswordAsync(user, "DummyUser$01", newPassword);
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+            var result = await _userManager.ResetPasswordAsync(user, token, newPassword);
 
             if(result.Succeeded)
             {

@@ -40,25 +40,32 @@ namespace AdminPanel.Areas.Admin.Pages.User
 
                 var userRolesViewModel = new List<UserRolesViewModel>();
 
-
                 foreach (ApplicationUser user in users)
                 {
-                    LogsInfo logsInfo = await _db.LogsInfos.FirstOrDefaultAsync(logsInfo => logsInfo.UserId == user.Id);
+                    PersonalizationInfo personalizationInfo = await _db.PersonalizationInfos.FirstOrDefaultAsync(perInfo => perInfo.UserId == user.Id);
 
-                    var thisViewModel = new UserRolesViewModel();
-                    thisViewModel.Id = user.Id;
-                    thisViewModel.UserName = user.UserName;
-                    thisViewModel.Email = user.Email;
-                    thisViewModel.FullName = user.FullName;
-                    thisViewModel.ProfilePicture = user.ProfilePicture;
-                    if (logsInfo != null)
+                    if (personalizationInfo != null)
                     {
-                        thisViewModel.DateCreated = logsInfo.DateCreated;
-                    }
-                    thisViewModel.Roles = await GetUserRoles(user);
-                    userRolesViewModel.Add(thisViewModel);
+                        if (personalizationInfo.IsDisabled != true)
+                        {
+                            LogsInfo logsInfo = await _db.LogsInfos.FirstOrDefaultAsync(logsInfo => logsInfo.UserId == user.Id);
+
+                            var thisViewModel = new UserRolesViewModel();
+                            thisViewModel.Id = user.Id;
+                            thisViewModel.UserName = user.UserName;
+                            thisViewModel.Email = user.Email;
+                            thisViewModel.FullName = user.FullName;
+                            thisViewModel.ProfilePicture = user.ProfilePicture;
+                            if (logsInfo != null)
+                            {
+                                thisViewModel.DateCreated = logsInfo.DateCreated;
+                            }
+                            thisViewModel.Roles = await GetUserRoles(user);
+                            userRolesViewModel.Add(thisViewModel);
+                        }
+                    }  
                 }
-                StatusMessage = statusMessage;
+                StatusMessage = "Successfully loaded all users";
                 UserRoleList = userRolesViewModel;
             }
         }

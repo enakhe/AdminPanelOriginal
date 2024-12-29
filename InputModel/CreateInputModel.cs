@@ -3,9 +3,9 @@
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
-namespace AdminPanel.InputModel
+namespace AdminPanel
 {
-    public class RegisterInputModel
+    public class CreateInputModel
     {
         [Required]
         [Display(Name = "Username")]
@@ -33,18 +33,37 @@ namespace AdminPanel.InputModel
 
         [Required]
         [PersonalData]
+        [Display(Name = "Date of Birth")]
+        public DateTime DOB { get; set; }
+
+        [Required]
+        [PersonalData]
         [Display(Name = "Gender")]
         public string Gender { get; set; }
 
-        [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
-        [DataType(DataType.Password)]
-        [Display(Name = "Password")]
-        public string Password { get; set; }
+        [PersonalData]
+        [Display(Name = "Profile Picture")]
+        public IFormFile ProfilePicture { get; set; }
 
-        [DataType(DataType.Password)]
-        [Display(Name = "Confirm password")]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
-        public string ConfirmPassword { get; set; }
+        [Required]
+        [PersonalData]
+        [Display(Name = "Profile Picture")]
+        public string Street { get; set; }
+
+        [PersonalData]
+        [Display(Name = "Work Address")]
+        public string City { get; set; }
+
+        [PersonalData]
+        [Display(Name = "OtherAddress")]
+        public string State { get; set; }
+
+        [PersonalData]
+        [Display(Name = "ZipCode")]
+        public string ZipCode { get; set; }
+
+        [Required]
+        [Display(Name = "Authorize")]
+        public bool IsAuthorized { get; set; }
     }
 }

@@ -46,6 +46,7 @@ namespace AdminPanel.Areas.Admin.Pages.ManageUsers.Profile
 
             // Loading all the roles a user belongs to
             var userRoles = await _db.UserRoles.Where(userRole => userRole.UserId == user.Id).Include(userRole => userRole.ApplicationRole).ToListAsync();
+
             var roleModel = new List<RoleViewModel>();
             if (userRoles != null)
             {
@@ -76,14 +77,13 @@ namespace AdminPanel.Areas.Admin.Pages.ManageUsers.Profile
             }
 
 
-
             // Loading all roles 
             var model = new List<ManageUserRolesViewModel>();
             foreach (var role in _roleManager.Roles)
             {
                 if (!role.Name.Contains("SuperAdmin"))
                 {
-                    var userRole = await _db.UserRoles.FirstOrDefaultAsync(userRole => userRole.UserId == user.Id);
+                    var userRole = await _db.UserRoles.Where(userRole => userRole.UserId == user.Id).Include(userRole => userRole.ApplicationRole).ToListAsync();
 
                     var userRolesViewModel = new ManageUserRolesViewModel();
 
@@ -92,8 +92,13 @@ namespace AdminPanel.Areas.Admin.Pages.ManageUsers.Profile
 
                     if (userRole != null)
                     {
-                        userRolesViewModel.StartDate = userRole.StartDate;
-                        userRolesViewModel.EndDate = userRole.EndDate;
+                        var currentRole = userRole.FirstOrDefault(userRole => userRole.ApplicationRole.Name == userRolesViewModel.RoleName);
+
+                        if (currentRole != null) {
+                            userRolesViewModel.StartDate = currentRole.StartDate;
+                            userRolesViewModel.EndDate = currentRole.EndDate;
+                        }
+                        
                     }
 
                     if (await _userManager.IsInRoleAsync(user, role.Name))

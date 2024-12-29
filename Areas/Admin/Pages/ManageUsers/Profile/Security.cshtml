@@ -86,20 +86,25 @@
                                         <input name="Id" id="Id" type="text" value="@Model.UserData.Id" class="form-control shadow-none col-md-6" aria-required="true" placeholder="Id" disabled hidden />
                                     </div>
 
-
                                     <div class="form-floating mb-3">
                                         <input name="newPassword" id="newPassword" type="text" class="form-control shadow-none col-md-6" aria-required="true" placeholder="Enter new password" />
                                         <label class="form-label">New Password</label>
                                     </div>
 
+                                    <div>
+                                        <p class="my-1">
+                                            <i id="usernameIcon"></i><span id="usernameOutput"></span>
+                                        </p>
+                                    </div>
 
                                     <div class="center">
                                         <div class="save-button my-3">
                                             <button type="submit" class="btn btn-success w-100 shadow-none">Save changes</button>
                                         </div>
                                     </div>
-
                                 </form>
+
+                                
                             </div>
                         </div>
                     </div>
@@ -108,3 +113,6 @@
         </div>
     </section>
 </div>
+
+
+<script src="~/js/passwordApi.js" asp-append-version="true"></script>

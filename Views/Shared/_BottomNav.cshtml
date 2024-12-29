@@ -1,0 +1,49 @@
+﻿<div class="border shadow-sm border-success rounded-3 border-opacity-75 border-3 p-3">
+    <h5 class="fw-bold">Looking for something else?</h5>
+    <div class="accordion accordion-flush" id="accordionFlushExample">
+        <div class="accordion-item p-2">
+            <a asp-area="Admin" asp-page="/ManageUsers/Profile/PersonalInfo" asp-route-id="@Model.UserData.Id" class="passwordA">
+                <div class="passwordInfo">
+                    <span>Personal Information</span>
+                    <i class="fa-solid fa-angle-right"></i>
+                </div>
+            </a>
+
+            <a asp-area="Admin" asp-page="/ManageUsers/Profile/Roles" asp-route-id="@Model.UserData.Id" class="passwordA">
+                <div class="passwordInfo">
+                    <span>Roles & Permission</span>
+                    <i class="fa-solid fa-angle-right"></i>
+                </div>
+            </a>
+
+            <a asp-area="Admin" asp-page="/ManageUsers/Profile/AuditLogging" asp-route-id="@Model.UserData.Id" class="passwordA">
+                <div class="passwordInfo">
+                    <span>Audit trial & Logging</span>
+                    <i class="fa-solid fa-angle-right"></i>
+                </div>
+            </a>
+
+            <a asp-area="Admin" asp-page="/ManageUsers/Profile/Security" asp-route-id="@Model.UserData.Id" class="passwordA">
+                <div class="passwordInfo">
+                    <span>Password & Security</span>
+                    <i class="fa-solid fa-angle-right"></i>
+                </div>
+            </a>
+
+            <a asp-area="Admin" asp-page="/ManageUsers/Profile/PrivacyPersonalization" asp-route-id="@Model.UserData.Id" class="passwordA">
+                <div class="passwordInfo">
+                    <span>Privacy & Personalization</span>
+                    <i class="fa-solid fa-angle-right"></i>
+                </div>
+            </a>
+
+            <a asp-area="Admin" asp-page="/ManageUsers/Profile/Security" asp-route-id="@Model.UserData.Id" class="passwordA">
+                <div class="passwordInfo">
+                    <span>Access request & Approval</span>
+                    <i class="fa-solid fa-angle-right"></i>
+                </div>
+            </a>
+        </div>
+
+    </div>
+</div>

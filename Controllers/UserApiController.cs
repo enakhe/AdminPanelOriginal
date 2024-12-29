@@ -54,5 +54,37 @@ namespace AdminPanel.Controllers
             }
             return new JsonResult($"Error, '{username}' is not valid");
         }
+
+        // POST api/<UserApiController>
+        [HttpPost]
+        [Route("password")]
+        public async Task<JsonResult> SetPassword(string newPassword)
+        {
+            if (newPassword != null)
+            {
+                Regex regexNumber = new Regex(@"\d");
+                Regex regexUpperCase = new Regex(@"[A-Z]");
+
+                if (newPassword.Length < 7 || newPassword == null || newPassword == "")
+                {
+                    return new JsonResult($"Error, Passwords must be at least 6 characters");
+                }
+
+                if (!regexNumber.IsMatch(newPassword))
+                {
+                    return new JsonResult($"Error, Passwords must have at least one digit ('0'-'9')");
+                }
+
+                if (!regexUpperCase.IsMatch(newPassword))
+                {
+                    return new JsonResult($"Error, Passwords must have at least one uppercase ('A'-'Z')");
+                }
+
+                var user = await _userManager.GetUserAsync(User);
+
+                return new JsonResult($"Password is valid");
+            }
+            return new JsonResult($"Error, Password is not valid");
+        }
     }
 }

@@ -75,8 +75,8 @@
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-5">
+                        <div class="row align-center">
+                            <div class="col-md-4">
                                 <div class="personal-info my-4">
                                     <div class="border rounded border-3 p-3">
                                         <h5 class="fw-bold">Roles Information </h5>
@@ -139,7 +139,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-7">
+                            <div class="col-md-8">
                                 <form id="updateForm needs-validation" enctype="multipart/form-data" method="post">
                                     <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
                                     <div class="personal-info my-4">
@@ -149,8 +149,8 @@
                                             @for (int i = 0; i < Model.AssignRoleList.Count; i++)
                                             {
                                                 <div class="row align-items-center">
-                                                    <div class="col-md-4">
-                                                        <div class="form-check">
+                                                    <div class="col-md-4 px-4">
+                                                        <div class="form-check form-switch">
                                                             <input type="hidden" asp-for="@Model.AssignRoleList[i].RoleId" />
                                                             <input type="hidden" asp-for="@Model.AssignRoleList[i].RoleName" />
                                                             <input asp-for="@Model.AssignRoleList[i].Selected" class="form-check-input shadow-none" />
@@ -185,6 +185,12 @@
 
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-center">
+                    <div class="col-md-6">
+                        <partial name="_BottomNav" />
                     </div>
                 </div>
             </div>

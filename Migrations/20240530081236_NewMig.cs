@@ -5,7 +5,7 @@
 namespace AdminPanel.Migrations
 {
     /// <inheritdoc />
-    public partial class AuditLoggingTime : Migration
+    public partial class NewMig : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

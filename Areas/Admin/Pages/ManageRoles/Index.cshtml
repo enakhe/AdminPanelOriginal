@@ -74,13 +74,13 @@
                                                         }
                                                     </td>
                                                     <td>
-                                                        @role.NoOfUser
+                                                        @role?.NoOfUser
                                                     </td>
                                                     <td>
-                                                        @role.Manager.FullName
+                                                        @role?.Manager?.FullName
                                                     </td>
                                                     <td>
-                                                        @role.DateCreated.ToString("MMM dd, yyyy")
+                                                        @role?.DateCreated.ToString("MMM dd, yyyy")
                                                     </td>
                                                     <td class="dropdown">
                                                         <a asp-area="Admin" asp-page="/ManageRoles/Profile/Index" asp-route-id="@role.Id" class="btn btn-success shadow-none">

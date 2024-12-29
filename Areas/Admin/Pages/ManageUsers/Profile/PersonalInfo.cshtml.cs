@@ -40,6 +40,7 @@ namespace AdminPanel.Areas.Admin.Pages.ManageUsers.Profile
         public void LoadAsync(ApplicationUser user)
         {
             ContactInfo userContactInfo = _db.ContactInfos.FirstOrDefault(contactInfo => contactInfo.UserId == user.Id);
+            PersonalizationInfo userPersonalizationInfo = _db.PersonalizationInfos.FirstOrDefault(userP => userP.UserId == user.Id);
 
             Input = new UserPersonalInfoInputModel()
             {
@@ -53,7 +54,9 @@ namespace AdminPanel.Areas.Admin.Pages.ManageUsers.Profile
                 Street = userContactInfo.Street,
                 City = userContactInfo.City,
                 State = userContactInfo.State,
-                ZipCode = userContactInfo.ZipCode
+                ZipCode = userContactInfo.ZipCode,
+                IsAuthorized = userPersonalizationInfo.IsAuthorized,
+                IsDisabled = userPersonalizationInfo.IsDisabled,
             };
 
             UserData = user;
@@ -70,6 +73,7 @@ namespace AdminPanel.Areas.Admin.Pages.ManageUsers.Profile
                 if (user != null)
                 {
                     LoadAsync(user);
+                    StatusMessage = $"Successfully loaded {user.FullName} personal information";
                 }
             }
             else
@@ -115,6 +119,10 @@ namespace AdminPanel.Areas.Admin.Pages.ManageUsers.Profile
                 var zipCode = contactInfo.ZipCode;
 
                 UserBackUpInfo userBackUpInfo = await _db.UserBackUpInfos.FirstOrDefaultAsync(backup => backup.UserId == user.Id);
+
+                PersonalizationInfo userPersonalizationInfo = _db.PersonalizationInfos.FirstOrDefault(userP => userP.UserId == user.Id);
+                var isAuthorized = userPersonalizationInfo.IsAuthorized;
+                var isDisabled = userPersonalizationInfo.IsDisabled;
 
                 if (Input.FirstName != firstName)
                 {
@@ -205,6 +213,18 @@ namespace AdminPanel.Areas.Admin.Pages.ManageUsers.Profile
                 {
                     contactInfo.ZipCode = Input.ZipCode;
                     _db.Entry(contactInfo).State = EntityState.Modified;
+                }
+
+                if (Input.IsAuthorized != isAuthorized)
+                {
+                    userPersonalizationInfo.IsAuthorized = Input.IsAuthorized;
+                    _db.Entry(userPersonalizationInfo).State = EntityState.Modified;
+                }
+
+                if (Input.IsDisabled != isDisabled)
+                {
+                    userPersonalizationInfo.IsDisabled = Input.IsDisabled;
+                    _db.Entry(userPersonalizationInfo).State = EntityState.Modified;
                 }
 
                 _ = await _userManager.UpdateAsync(user);

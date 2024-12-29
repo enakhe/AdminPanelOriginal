@@ -26,6 +26,10 @@ html {
   html {
     font-size: 16px;
   }
+
+  .login {
+      width: 350px;
+  }
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
@@ -137,4 +141,45 @@ body {
     --bs-btn-padding-x: .5rem;
     --bs-btn-font-size: .75rem;
     font-size: 10px;
+}
+
+.passwordA {
+    color: black;
+}
+
+.passwordA:focus {
+    color: black
+}
+
+.passwordA:hover {
+    color: black
+}
+
+.passwordInfo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 17.5px;
+}
+
+.passwordInfo .fa-angle-down {
+    font-size: 20px;
+}
+
+.switches {
+    margin-left: 1rem;
+}
+
+.ml-3 {
+    margin-left: 10px;
+}
+
+.login {
+    width: 600px;
+}
+
+@media (max-width: 765px) {
+    .login {
+        width: 300px;
+    }
 }

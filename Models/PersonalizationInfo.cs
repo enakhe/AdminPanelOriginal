@@ -7,6 +7,7 @@ namespace AdminPanel.Models
         //Personalization Infromation
         public string Id { get; set; } = Guid.NewGuid().ToString();
         public bool IsAuthorized { get; set; }
+        public bool IsDisabled { get; set; } = false;
         public bool IsOnline { get; set; } = false;
 
         public string UserId { get; set; }

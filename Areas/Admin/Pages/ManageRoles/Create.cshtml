@@ -45,7 +45,9 @@
                                 <div class="d-flex justify-content-center">
                                     <div class="mb-3 col-md-3">
                                         <div class="">
-                                            <img id="profilePicture" class="rounded-circle" src="~/img/settings.png" width="50">
+                                            <center>
+                                                <img id="profilePicture" class="rounded-circle" src="~/img/settings.png" width="50">
+                                            </center>
                                             <input class="form-control shadow-none my-3" asp-for="Input.Icon" onchange="document.getElementById('profilePicture').src = window.URL.createObjectURL(this.files[0])" type="file" id="formFile">
                                         </div>
                                     </div>
